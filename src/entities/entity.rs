@@ -1,12 +1,15 @@
 use serde::{Serialize, Deserialize};
 use crate::entities::object::ActivityStreamObject;
+use crate::entities::link::ActivityStreamLink;
 use crate::MaybeOptional;
 use url::Url;
 
 //// Enum containing any valid ActivityStream Entity.
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[serde(untagged)]
 pub enum ActivityStreamEntity {
     ActivityStreamObject(ActivityStreamObject),
+    ActivityStreamLink(ActivityStreamLink),
     Link(Url),
 }
 
@@ -15,7 +18,7 @@ pub type BoxedActivityStreamEntity = Box<ActivityStreamEntity>;
 
 
 //// This enum describes the ActivityStream core types as defined in [Section 2 of the specification](https://www.w3.org/TR/activitystreams-vocabulary/#types)
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum ActivityStreamEntityType {
     Object,
     Link,
@@ -32,12 +35,4 @@ impl Default for ActivityStreamEntityType {
   fn default() -> Self {
     ActivityStreamEntityType::Object
   }
-}
-
-//// This trait allows access to all the basic elements of a core type
-pub trait ActivityStreamEntityProperties {
-    fn get_id(&self) -> &Option<Url>;
-    fn set_id<T: MaybeOptional<Url>>(&mut self, id: T);
-    fn get_type(&self) -> &ActivityStreamEntityType;
-    fn set_type(&mut self, r#type: ActivityStreamEntityType);
 }

@@ -1,13 +1,13 @@
 use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize, Serializer};
-use ambassador::delegatable_trait;
+use serde::{Serialize, Deserialize};
+use crate::traits::properties::*;
 use url::Url;
 
 use crate::content::{
     ActivityStreamMultilangString, ActivityStreamLinkableImage, ActivityStreamLinkableUrl,
 };
-use crate::entities::entity::{ActivityStreamEntityProperties, ActivityStreamEntityType, ActivityStreamEntity, BoxedActivityStreamEntity};
-use crate::MaybeOptional;
+use crate::entities::entity::{ActivityStreamEntityType, ActivityStreamEntity, BoxedActivityStreamEntity};
+use crate::{MaybeOptional, OneOrMultiple};
 
 impl ActivityStreamEntityProperties for ActivityStreamObject {
     fn get_id(&self) -> &Option<Url> {
@@ -19,94 +19,25 @@ impl ActivityStreamEntityProperties for ActivityStreamObject {
     }
 
     fn get_type(&self) -> &ActivityStreamEntityType {
-      &self.r#type
+      if let Some(r#type) = &self.r#type {
+        r#type
+      } else {
+        panic!("The entity type is null. This should not happen. Make sure that the object is created with the \"create\" method and not the \"default\" method");
+      }
     }
 
     fn set_type(&mut self, r#type: ActivityStreamEntityType) {
-      self.r#type = r#type;
+      self.r#type = Some(r#type);
     }
 
-}
+    fn register_context(&mut self, new_context: Url) {
+        if let Some(ref mut context) = self.context {
+            context.append(new_context);
+        } else {
+            self.context = Some(OneOrMultiple::Element(new_context));
+        }
+    }
 
-#[delegatable_trait]
-pub trait ActivityStreamObjectProperties {
-    fn get_attachments(&self) -> &Option<Vec<ActivityStreamEntity>>;
-    fn set_attachments<S: ActivityStreamObjectProperties, T: MaybeOptional<Vec<S>>>(
-        &mut self,
-        attachment: T,
-    )
-    where
-        ActivityStreamEntity: From<S>;
-    fn add_attachment<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(
-        &mut self,
-        attachment: T,
-    )
-    where
-        ActivityStreamEntity: From<S>;
-
-    fn get_attributed_to(&self) -> &Option<Vec<ActivityStreamEntity>>;
-    fn set_attributed_to<S: ActivityStreamObjectProperties, T: MaybeOptional<Vec<S>>>(
-        &mut self,
-        attributed_to: T,
-    )
-    where
-        ActivityStreamEntity: From<S>;
-
-    fn add_attributed_to<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(
-        &mut self,
-        attributed_to: T,
-    )
-    where
-        ActivityStreamEntity: From<S>;
-
-    fn get_audience(&self) -> &Option<BoxedActivityStreamEntity>;
-    fn set_audience<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, audience: T) where ActivityStreamEntity: From<S>;
-    fn get_content(&self) -> &Option<ActivityStreamMultilangString>;
-    fn set_content<S, T: MaybeOptional<S>>(&mut self, content: T) where ActivityStreamMultilangString: From<S>;
-    fn get_context(&self) -> &Option<ActivityStreamMultilangString>;
-    fn set_context<S, T: MaybeOptional<S>>(&mut self, context: T) where ActivityStreamMultilangString: From<S>;
-    fn get_end_time(&self) -> &Option<DateTime<Utc>>;
-    fn set_end_time<T: MaybeOptional<DateTime<Utc>>>(&mut self, end_time: T);
-    fn get_generator(&self) -> &Option<BoxedActivityStreamEntity>;
-    fn set_generator<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, generator: T) where ActivityStreamEntity: From<S>;
-    fn get_icon(&self) -> &Option<ActivityStreamLinkableImage>;
-    fn set_icon<S, T: MaybeOptional<S>>(&mut self, icon: T) where ActivityStreamLinkableImage: From<S>;
-    fn get_image(&self) -> &Option<ActivityStreamLinkableImage>;
-    fn set_image<S, T: MaybeOptional<S>>(&mut self, image: T) where ActivityStreamLinkableImage: From<S>;
-    fn get_in_reply_to(&self) -> &Option<Url>;
-    fn set_in_reply_to<T: MaybeOptional<Url>>(&mut self, in_reply_to: T);
-    fn get_location(&self) -> &Option<BoxedActivityStreamEntity>;
-    fn set_location<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, location: T) where ActivityStreamEntity: From<S>;
-    fn get_preview(&self) -> &Option<BoxedActivityStreamEntity>;
-    fn set_preview<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, preview: T) where ActivityStreamEntity: From<S>;
-    fn get_published(&self) -> &Option<DateTime<Utc>>;
-    fn set_published<T: MaybeOptional<DateTime<Utc>>>(&mut self, published: T);
-    fn get_replies(&self) -> &Option<ActivityStreamCollection>;
-    fn set_replies<T: MaybeOptional<ActivityStreamCollection>>(&mut self, replies: T);
-    fn get_start_time(&self) -> &Option<DateTime<Utc>>;
-    fn set_start_time<T: MaybeOptional<DateTime<Utc>>>(&mut self, start_time: T);
-    fn get_summary(&self) -> &Option<ActivityStreamMultilangString>;
-    fn set_summary<S, T: MaybeOptional<S>>(&mut self, summary: T) where ActivityStreamMultilangString: From<S>;
-    fn get_tags(&self) -> &Option<Vec<ActivityStreamEntity>>;
-    fn set_tags<S: ActivityStreamObjectProperties, T: MaybeOptional<Vec<S>>>(&mut self, attachment: T) where ActivityStreamEntity: From<S>;
-    fn add_tag<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, attachment: T) where ActivityStreamEntity: From<S>;
-    fn get_updated(&self) -> &Option<DateTime<Utc>>;
-    fn set_updated<T: MaybeOptional<DateTime<Utc>>>(&mut self, updated: T);
-    fn get_url(&self) -> &Option<ActivityStreamLinkableUrl>;
-    fn set_url<S, T: MaybeOptional<S>>(&mut self, url: T) where ActivityStreamLinkableUrl: From<S>;
-    fn get_to(&self) -> &Option<BoxedActivityStreamEntity>;
-    fn set_to<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, to: T) where ActivityStreamEntity: From<S>;
-    fn get_bto(&self) -> &Option<BoxedActivityStreamEntity>;
-    fn set_bto<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, to: T) where ActivityStreamEntity: From<S>;
-    fn get_cc(&self) -> &Option<BoxedActivityStreamEntity>;
-    fn set_cc<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, cc: T) where ActivityStreamEntity: From<S>;
-    fn get_bcc(&self) -> &Option<Vec<ActivityStreamEntity>>;
-    fn set_bcc<S: ActivityStreamObjectProperties, T: MaybeOptional<Vec<S>>>(&mut self, attachment: T) where ActivityStreamEntity: From<S>;
-    fn add_bcc<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, attachment: T) where ActivityStreamEntity: From<S>;
-    fn get_media_type(&self) -> &Option<String>;
-    fn set_media_type<T: MaybeOptional<String>>(&mut self, media_type: T);
-    fn get_duration(&self) -> &Option<String>;
-    fn set_duration<T: MaybeOptional<String>>(&mut self, duration: T);
 }
 
 impl ActivityStreamObjectProperties for ActivityStreamObject {
@@ -114,7 +45,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         &self.attachment
     }
 
-    fn set_attachments<S: ActivityStreamObjectProperties, T: MaybeOptional<Vec<S>>>(
+    fn set_attachments<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(
         &mut self,
         attachment: T,
     )
@@ -131,7 +62,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         }
     }
 
-    fn add_attachment<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(
+    fn add_attachment<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(
         &mut self,
         attachment: T,
     )
@@ -153,7 +84,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
       &self.attributedTo
     }
 
-    fn set_attributed_to<S: ActivityStreamObjectProperties, T: MaybeOptional<Vec<S>>>(
+    fn set_attributed_to<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(
         &mut self,
         attributed_to: T,
     )
@@ -170,7 +101,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         }
     }
 
-    fn add_attributed_to<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(
+    fn add_attributed_to<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(
         &mut self,
         attributed_to: T,
     )
@@ -193,7 +124,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
       &self.audience
     }
 
-    fn set_audience<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, audience: T) where ActivityStreamEntity: From<S> {
+    fn set_audience<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, audience: T) where ActivityStreamEntity: From<S> {
       if let Some(audience) = audience.get_optional() {
         self.audience = Some(Box::new(ActivityStreamEntity::from(audience)));
       }
@@ -209,16 +140,6 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
       }
     }
 
-    fn get_context(&self) -> &Option<ActivityStreamMultilangString> {
-      &self.context
-    }
-
-    fn set_context<S, T: MaybeOptional<S>>(&mut self, context: T) where ActivityStreamMultilangString: From<S> {
-      if let Some(context) = context.get_optional() {
-        self.context = Some(ActivityStreamMultilangString::from(context));
-      }
-    }
-
     fn get_end_time(&self) -> &Option<DateTime<Utc>> {
       &self.endTime
     }
@@ -231,7 +152,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
       &self.generator
     }
 
-    fn set_generator<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, generator: T) where ActivityStreamEntity: From<S> {
+    fn set_generator<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, generator: T) where ActivityStreamEntity: From<S> {
       if let Some(generator) = generator.get_optional() {
         self.generator = Some(Box::new(ActivityStreamEntity::from(generator)));
       }
@@ -269,7 +190,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
       &self.location
     }
 
-    fn set_location<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, location: T) where ActivityStreamEntity: From<S> {
+    fn set_location<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, location: T) where ActivityStreamEntity: From<S> {
       if let Some(location) = location.get_optional() {
         self.location = Some(Box::new(ActivityStreamEntity::from(location)));
       }
@@ -279,7 +200,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
       &self.preview
     }
 
-    fn set_preview<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, preview: T) where ActivityStreamEntity: From<S> {
+    fn set_preview<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, preview: T) where ActivityStreamEntity: From<S> {
       if let Some(preview) = preview.get_optional() {
         self.preview = Some(Box::new(ActivityStreamEntity::from(preview)));
       }
@@ -323,7 +244,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         &self.tag
     }
 
-    fn set_tags<S: ActivityStreamObjectProperties, T: MaybeOptional<Vec<S>>>(
+    fn set_tags<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(
         &mut self,
         tag: T,
     )
@@ -340,7 +261,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         }
     }
 
-    fn add_tag<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(
+    fn add_tag<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(
         &mut self,
         tag: T,
     )
@@ -380,7 +301,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
       &self.to
     }
 
-    fn set_to<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, to: T) where ActivityStreamEntity: From<S> {
+    fn set_to<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, to: T) where ActivityStreamEntity: From<S> {
       if let Some(to) = to.get_optional() {
         self.to = Some(Box::new(ActivityStreamEntity::from(to)));
       }
@@ -390,7 +311,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
       &self.bto
     }
 
-    fn set_bto<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, bto: T) where ActivityStreamEntity: From<S> {
+    fn set_bto<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, bto: T) where ActivityStreamEntity: From<S> {
       if let Some(bto) = bto.get_optional() {
         self.bto = Some(Box::new(ActivityStreamEntity::from(bto)));
       }
@@ -400,7 +321,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
       &self.cc
     }
 
-    fn set_cc<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(&mut self, cc: T) where ActivityStreamEntity: From<S> {
+    fn set_cc<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, cc: T) where ActivityStreamEntity: From<S> {
       if let Some(cc) = cc.get_optional() {
         self.cc = Some(Box::new(ActivityStreamEntity::from(cc)));
       }
@@ -410,7 +331,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         &self.bcc
     }
 
-    fn set_bcc<S: ActivityStreamObjectProperties, T: MaybeOptional<Vec<S>>>(
+    fn set_bcc<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(
         &mut self,
         bcc: T,
     )
@@ -427,7 +348,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         }
     }
 
-    fn add_bcc<S: ActivityStreamObjectProperties, T: MaybeOptional<S>>(
+    fn add_bcc<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(
         &mut self,
         bcc: T,
     )
@@ -466,7 +387,11 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
 impl ActivityStreamObject {
 
   pub fn create() -> Self {
+
+    let object_context = Url::parse("https://www.w3.org/ns/activitystreams").unwrap();
+
     let mut new_object = ActivityStreamObject::default();
+    new_object.register_context(object_context);
     new_object.set_type(ActivityStreamEntityType::Object);
     new_object
   }
@@ -474,11 +399,16 @@ impl ActivityStreamObject {
 }
 
 #[allow(non_snake_case)]
-#[derive(Debug, Default, Serialize, Deserialize)]
+#[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
+#[serde(deny_unknown_fields)]
 pub struct ActivityStreamObject {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     id: Option<Url>,
-    r#type: ActivityStreamEntityType,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    r#type: Option<ActivityStreamEntityType>,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(rename = "@context")]
+    context: Option<OneOrMultiple<Url>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     attachment: Option<Vec<ActivityStreamEntity>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
@@ -487,8 +417,6 @@ pub struct ActivityStreamObject {
     audience: Option<BoxedActivityStreamEntity>, //The specs say "one or more" but example 69 is only a dict
     #[serde(skip_serializing_if = "Option::is_none", default)]
     content: Option<ActivityStreamMultilangString>,
-    #[serde(skip_serializing_if = "Option::is_none", default)]
-    context: Option<ActivityStreamMultilangString>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     name: Option<ActivityStreamMultilangString>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
@@ -553,7 +481,7 @@ const r#type:ActivityStreamCoreType = ActivityStreamCoreType::TransitiveActivity
 */}
 
 //Extends ActivityStreamObject
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct ActivityStreamCollection {
     /*id: Option<Url>,
 const r#type:ActivityStreamCoreType = ActivityStreamCoreType::Collection,

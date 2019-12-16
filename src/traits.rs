@@ -2,11 +2,9 @@
 pub mod properties {
 
     use ambassador::delegatable_trait;
-    use crate::{MaybeOptional, OneOrMultiple};
+    use crate::MaybeOptional;
     use crate::entities::entity::{ActivityStreamEntity, BoxedActivityStreamEntity, ActivityStreamEntityType};
-    use crate::entities::object::ActivityStreamCollection;
-    use std::fmt::Debug;
-    use serde::{Serialize, Deserialize};
+    use crate::entities::collection::ActivityStreamCollection;
     use crate::content::*;
     use chrono::{DateTime, Utc};
     use url::Url;
@@ -62,7 +60,7 @@ pub mod properties {
         fn set_preview<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, preview: T) where ActivityStreamEntity: From<S>;
         fn get_published(&self) -> &Option<DateTime<Utc>>;
         fn set_published<T: MaybeOptional<DateTime<Utc>>>(&mut self, published: T);
-        fn get_replies(&self) -> &Option<ActivityStreamCollection>;
+        fn get_replies(&self) -> &Option<Box<ActivityStreamCollection>>;
         fn set_replies<T: MaybeOptional<ActivityStreamCollection>>(&mut self, replies: T);
         fn get_start_time(&self) -> &Option<DateTime<Utc>>;
         fn set_start_time<T: MaybeOptional<DateTime<Utc>>>(&mut self, start_time: T);
@@ -116,6 +114,29 @@ pub mod properties {
         fn set_origin<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, origin: T) where ActivityStreamEntity: From<S>;
         fn get_instrument(&self) -> &Option<BoxedActivityStreamEntity>;
         fn set_instrument<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, instrument: T) where ActivityStreamEntity: From<S>;
+    }
+
+    #[delegatable_trait]
+    pub trait ActivityStreamCollectionProperties {
+        fn get_total_items(&self) -> &Option<usize>;
+        fn get_current(&self) -> &Option<BoxedActivityStreamEntity>;
+        fn set_current<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, current: T) where ActivityStreamEntity: From<S>;
+        fn get_first(&self) -> &Option<BoxedActivityStreamEntity>;
+        fn set_first<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, first: T) where ActivityStreamEntity: From<S>;
+        fn get_last(&self) -> &Option<BoxedActivityStreamEntity>;
+        fn set_last<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, last: T) where ActivityStreamEntity: From<S>;
+        fn get_items(&self) -> &Option<Vec<ActivityStreamEntity>>;
+        fn set_items<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(&mut self, items: T) where ActivityStreamEntity: From<S>;
+        fn add_item<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, item: T) where ActivityStreamEntity: From<S>;
+    }
+
+    pub trait ActivityStreamCollectionPageProperties {
+        fn get_part_of(&self) -> &Option<ActivityStreamLinkableCollection>;
+        fn set_part_of<S, T: MaybeOptional<S>>(&mut self, part_of: T) where ActivityStreamLinkableCollection: From<S>;
+        fn get_next(&self) -> &Option<Box<ActivityStreamLinkableCollectionPage>>;
+        fn set_next<S, T: MaybeOptional<S>>(&mut self, next: T) where ActivityStreamLinkableCollectionPage: From<S>;
+        fn get_prev(&self) -> &Option<Box<ActivityStreamLinkableCollectionPage>>;
+        fn set_prev<S, T: MaybeOptional<S>>(&mut self, prev: T) where ActivityStreamLinkableCollectionPage: From<S>;
     }
 
     //// This trait allows access to all the basic elements of a core type

@@ -5,7 +5,7 @@ use crate::traits::properties::*;
 use ambassador::Delegate;
 use crate::{MaybeOptional, OneOrMultiple};
 use url::Url;
-use crate::entities::object::ActivityStreamCollection;
+use crate::entities::collection::ActivityStreamCollection;
 use crate::content::*;
 use chrono::{DateTime, Utc};
 

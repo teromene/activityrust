@@ -1,11 +1,11 @@
 use serde::{Serialize, Deserialize};
 use crate::entities::entity::{ActivityStreamEntityType, BoxedActivityStreamEntity, ActivityStreamEntity};
 use crate::entities::object::ActivityStreamObject;
+use crate::entities::collection::ActivityStreamCollection;
 use crate::traits::properties::*;
 use ambassador::Delegate;
 use crate::{MaybeOptional, OneOrMultiple};
 use url::Url;
-use crate::entities::object::ActivityStreamCollection;
 use crate::content::*;
 use chrono::{DateTime, Utc};
 
@@ -110,6 +110,15 @@ impl ActivityStreamActivity {
     new_object
   }
 
+  pub fn create_with_type(r#type: ActivityStreamActivityType) -> Self {
+    let object_context = Url::parse("https://www.w3.org/ns/activitystreams").unwrap();
+
+    let mut new_object = ActivityStreamActivity::default();
+    new_object.register_context(object_context);
+    new_object.set_type(ActivityStreamEntityType::ActivityType(r#type));
+    new_object
+  }
+
 }
 
 #[allow(non_snake_case)]
@@ -136,4 +145,36 @@ pub struct ActivityStreamActivity {
     origin: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     instrument: Option<BoxedActivityStreamEntity>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq)]
+pub enum ActivityStreamActivityType {
+    Accept,
+    Add,
+    Announce,
+    Arrive,
+    Block,
+    Create,
+    Delete,
+    Dislike,
+    Flag,
+    Follow,
+    Ignore,
+    Invite,
+    Join,
+    Leave,
+    Like,
+    Listen,
+    Move,
+    Offer,
+    Question,
+    Reject,
+    Read,
+    Remove,
+    TentativeReject,
+    TentativeAccept,
+    Travel,
+    Undo,
+    Update,
+    View,
 }

@@ -7,6 +7,7 @@ use crate::content::{
     ActivityStreamMultilangString, ActivityStreamLinkableImage, ActivityStreamLinkableUrl,
 };
 use crate::entities::entity::{ActivityStreamEntityType, ActivityStreamEntity, BoxedActivityStreamEntity};
+use crate::entities::collection::ActivityStreamCollection;
 use crate::{MaybeOptional, OneOrMultiple};
 
 impl ActivityStreamEntityProperties for ActivityStreamObject {
@@ -214,12 +215,14 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
       self.published = published.get_optional();
     }
 
-    fn get_replies(&self) -> &Option<ActivityStreamCollection> {
+    fn get_replies(&self) -> &Option<Box<ActivityStreamCollection>> {
       &self.replies
     }
 
     fn set_replies<T: MaybeOptional<ActivityStreamCollection>>(&mut self, replies: T) {
-      self.replies = replies.get_optional();
+      if let Some(replies) = replies.get_optional() {
+        self.replies = Some(Box::new(replies));
+      }
     }
 
     fn get_start_time(&self) -> &Option<DateTime<Utc>> {
@@ -436,7 +439,7 @@ pub struct ActivityStreamObject {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     published: Option<DateTime<Utc>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    replies: Option<ActivityStreamCollection>,
+    replies: Option<Box<ActivityStreamCollection>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     startTime: Option<DateTime<Utc>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
@@ -460,36 +463,6 @@ pub struct ActivityStreamObject {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     duration: Option<String>, //FIXME: Duration not implemented as a valid type
 }
-
-//Extends Object
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ActivityStreamActivity {
-    /*id: Option<Url>,
-const r#type:ActivityStreamCoreType = ActivityStreamCoreType::Activity,
-actor: Option<Vec<ActivityStreamActor>,
-object: Option<ActivityStreamObject>,
-target: Option<ActivityStreamTarget>,
-result: Option<ActivityStreamResult>,
-origin: Option<ActivityStreamOrigin>,
-instrument: Option<ActivityStreamInstrument>,*/}
-
-//Extends ActivityStreamActivity, without access to the object type
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ActivityStreamTransitiveActivity {
-    /*id: Option<Url>,
-const r#type:ActivityStreamCoreType = ActivityStreamCoreType::TransitiveActivity,
-*/}
-
-//Extends ActivityStreamObject
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
-pub struct ActivityStreamCollection {
-    /*id: Option<Url>,
-const r#type:ActivityStreamCoreType = ActivityStreamCoreType::Collection,
-totalItems: Option<ActivityStreamTotalItems>,
-current: Option<ActivityStreamCurrent>,
-first: Option<ActivityStreamFirst>,
-last: Option<ActivityStreamLast>,
-items: Option<ActivityStreamItems>,*/}
 
 pub struct ActivitySteamOrderedCollection {
     /*id: Option<Url>,

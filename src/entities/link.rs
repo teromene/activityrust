@@ -1,12 +1,13 @@
-use serde::{Serialize, Deserialize, Deserializer};
-use crate::traits::properties::*;
-use crate::entities::entity::{ActivityStreamEntityType, BoxedActivityStreamEntity, ActivityStreamEntity};
 use crate::content::ActivityStreamMultilangString;
+use crate::entities::entity::{
+    ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
+};
+use crate::traits::properties::*;
 use crate::{MaybeOptional, OneOrMultiple};
+use serde::{Deserialize, Deserializer, Serialize};
 use url::Url;
 
 impl ActivityStreamLinkProperties for ActivityStreamLink {
-
     fn get_id(&self) -> &Option<Url> {
         &self.id
     }
@@ -22,7 +23,6 @@ impl ActivityStreamLinkProperties for ActivityStreamLink {
             self.context = Some(OneOrMultiple::Element(new_context));
         }
     }
-
 
     fn get_href(&self) -> &Option<Url> {
         &self.href
@@ -49,13 +49,16 @@ impl ActivityStreamLinkProperties for ActivityStreamLink {
     }
 
     fn get_name(&self) -> &Option<ActivityStreamMultilangString> {
-      &self.name
+        &self.name
     }
 
-    fn set_name<S, T: MaybeOptional<S>>(&mut self, name: T) where ActivityStreamMultilangString: From<S> {
-      if let Some(name) = name.get_optional() {
-        self.name = Some(ActivityStreamMultilangString::from(name));
-      }
+    fn set_name<S, T: MaybeOptional<S>>(&mut self, name: T)
+    where
+        ActivityStreamMultilangString: From<S>,
+    {
+        if let Some(name) = name.get_optional() {
+            self.name = Some(ActivityStreamMultilangString::from(name));
+        }
     }
 
     fn get_height(&self) -> &Option<usize> {
@@ -75,13 +78,16 @@ impl ActivityStreamLinkProperties for ActivityStreamLink {
     }
 
     fn get_preview(&self) -> &Option<BoxedActivityStreamEntity> {
-      &self.preview
+        &self.preview
     }
 
-    fn set_preview<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, preview: T) where ActivityStreamEntity: From<S> {
-      if let Some(preview) = preview.get_optional() {
-        self.preview = Some(Box::new(ActivityStreamEntity::from(preview)));
-      }
+    fn set_preview<S, T: MaybeOptional<S>>(&mut self, preview: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
+        if let Some(preview) = preview.get_optional() {
+            self.preview = Some(Box::new(ActivityStreamEntity::from(preview)));
+        }
     }
 }
 

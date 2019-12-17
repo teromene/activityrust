@@ -1,11 +1,12 @@
-use crate::entities::link::ActivityStreamLink;
-use crate::entities::entity::ActivityStreamEntity;
 use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::collectionpage::ActivityStreamCollectionPage;
-use std::collections::HashMap;
-use serde::{Serialize, Deserialize};
-use url::Url;
+use crate::entities::entity::ActivityStreamEntity;
+use crate::entities::link::ActivityStreamLink;
+use crate::entities::objecttypes::*;
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use url::Url;
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -65,4 +66,11 @@ pub enum ActivityStreamQuestionClosed {
     Entity(ActivityStreamEntity),
     Bool(bool),
     Date(DateTime<Utc>),
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ActivityStreamLinkableRelationship {
+    Url(Url),
+    Relationship(ActivityStreamRelationship),
 }

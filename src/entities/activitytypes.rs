@@ -1,15 +1,17 @@
-#[allow(non_snake_case)]
-use serde::{Serialize, Deserialize, Deserializer};
-use crate::entities::entity::{ActivityStreamEntityType, BoxedActivityStreamEntity, ActivityStreamEntity};
-use crate::entities::collection::ActivityStreamCollection;
+use crate::content::*;
 use crate::entities::activity::ActivityStreamActivity;
+use crate::entities::collection::ActivityStreamCollection;
+use crate::entities::entity::{
+    ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
+};
 use crate::entities::intransitiveactivity::ActivityStreamIntransitiveActivity;
 use crate::traits::properties::*;
-use ambassador::Delegate;
 use crate::{MaybeOptional, OneOrMultiple};
-use url::Url;
-use crate::content::*;
+use ambassador::Delegate;
 use chrono::{DateTime, Utc};
+#[allow(non_snake_case)]
+use serde::{Deserialize, Deserializer, Serialize};
+use url::Url;
 
 generate_basics!(ActivityStreamAccept, ActivityStreamEntityType::Accept);
 
@@ -21,11 +23,13 @@ pub struct ActivityStreamAccept {
     #[serde(deserialize_with = "ActivityStreamAccept::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
-generate_basics!(ActivityStreamTentativeAccept, ActivityStreamEntityType::TentativeAccept);
-
+generate_basics!(
+    ActivityStreamTentativeAccept,
+    ActivityStreamEntityType::TentativeAccept
+);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
@@ -35,7 +39,7 @@ pub struct ActivityStreamTentativeAccept {
     #[serde(deserialize_with = "ActivityStreamTentativeAccept::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamAccept
+    _base: ActivityStreamAccept,
 }
 
 generate_basics!(ActivityStreamAdd, ActivityStreamEntityType::Add);
@@ -48,7 +52,7 @@ pub struct ActivityStreamAdd {
     #[serde(deserialize_with = "ActivityStreamAdd::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamArrive, ActivityStreamEntityType::Arrive);
@@ -61,7 +65,7 @@ pub struct ActivityStreamArrive {
     #[serde(deserialize_with = "ActivityStreamArrive::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamIntransitiveActivity
+    _base: ActivityStreamIntransitiveActivity,
 }
 
 generate_basics!(ActivityStreamCreate, ActivityStreamEntityType::Create);
@@ -74,7 +78,7 @@ pub struct ActivityStreamCreate {
     #[serde(deserialize_with = "ActivityStreamCreate::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamDelete, ActivityStreamEntityType::Delete);
@@ -87,7 +91,7 @@ pub struct ActivityStreamDelete {
     #[serde(deserialize_with = "ActivityStreamDelete::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamFollow, ActivityStreamEntityType::Follow);
@@ -100,7 +104,7 @@ pub struct ActivityStreamFollow {
     #[serde(deserialize_with = "ActivityStreamFollow::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamIgnore, ActivityStreamEntityType::Ignore);
@@ -114,7 +118,7 @@ pub struct ActivityStreamIgnore {
     #[serde(deserialize_with = "ActivityStreamIgnore::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamJoin, ActivityStreamEntityType::Join);
@@ -127,7 +131,7 @@ pub struct ActivityStreamJoin {
     #[serde(deserialize_with = "ActivityStreamJoin::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamLeave, ActivityStreamEntityType::Leave);
@@ -140,7 +144,7 @@ pub struct ActivityStreamLeave {
     #[serde(deserialize_with = "ActivityStreamLeave::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamLike, ActivityStreamEntityType::Like);
@@ -153,7 +157,7 @@ pub struct ActivityStreamLike {
     #[serde(deserialize_with = "ActivityStreamLike::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamOffer, ActivityStreamEntityType::Offer);
@@ -166,7 +170,7 @@ pub struct ActivityStreamOffer {
     #[serde(deserialize_with = "ActivityStreamOffer::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamInvite, ActivityStreamEntityType::Invite);
@@ -179,7 +183,7 @@ pub struct ActivityStreamInvite {
     #[serde(deserialize_with = "ActivityStreamInvite::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamOffer
+    _base: ActivityStreamOffer,
 }
 
 generate_basics!(ActivityStreamReject, ActivityStreamEntityType::Reject);
@@ -192,10 +196,13 @@ pub struct ActivityStreamReject {
     #[serde(deserialize_with = "ActivityStreamReject::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
-generate_basics!(ActivityStreamTentativeReject, ActivityStreamEntityType::TentativeReject);
+generate_basics!(
+    ActivityStreamTentativeReject,
+    ActivityStreamEntityType::TentativeReject
+);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
@@ -205,7 +212,7 @@ pub struct ActivityStreamTentativeReject {
     #[serde(deserialize_with = "ActivityStreamTentativeReject::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamReject
+    _base: ActivityStreamReject,
 }
 
 generate_basics!(ActivityStreamRemove, ActivityStreamEntityType::Remove);
@@ -218,7 +225,7 @@ pub struct ActivityStreamRemove {
     #[serde(deserialize_with = "ActivityStreamRemove::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamUndo, ActivityStreamEntityType::Undo);
@@ -231,7 +238,7 @@ pub struct ActivityStreamUndo {
     #[serde(deserialize_with = "ActivityStreamUndo::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamUpdate, ActivityStreamEntityType::Update);
@@ -244,7 +251,7 @@ pub struct ActivityStreamUpdate {
     #[serde(deserialize_with = "ActivityStreamUpdate::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamView, ActivityStreamEntityType::View);
@@ -257,7 +264,7 @@ pub struct ActivityStreamView {
     #[serde(deserialize_with = "ActivityStreamView::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamListen, ActivityStreamEntityType::Listen);
@@ -270,7 +277,7 @@ pub struct ActivityStreamListen {
     #[serde(deserialize_with = "ActivityStreamListen::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamRead, ActivityStreamEntityType::Read);
@@ -283,7 +290,7 @@ pub struct ActivityStreamRead {
     #[serde(deserialize_with = "ActivityStreamRead::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamMove, ActivityStreamEntityType::Move);
@@ -296,7 +303,7 @@ pub struct ActivityStreamMove {
     #[serde(deserialize_with = "ActivityStreamMove::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamTravel, ActivityStreamEntityType::Travel);
@@ -309,7 +316,7 @@ pub struct ActivityStreamTravel {
     #[serde(deserialize_with = "ActivityStreamTravel::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamIntransitiveActivity
+    _base: ActivityStreamIntransitiveActivity,
 }
 
 generate_basics!(ActivityStreamAnnounce, ActivityStreamEntityType::Announce);
@@ -322,7 +329,7 @@ pub struct ActivityStreamAnnounce {
     #[serde(deserialize_with = "ActivityStreamAnnounce::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamBlock, ActivityStreamEntityType::Block);
@@ -335,7 +342,7 @@ pub struct ActivityStreamBlock {
     #[serde(deserialize_with = "ActivityStreamBlock::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamIgnore
+    _base: ActivityStreamIgnore,
 }
 
 generate_basics!(ActivityStreamFlag, ActivityStreamEntityType::Flag);
@@ -348,7 +355,7 @@ pub struct ActivityStreamFlag {
     #[serde(deserialize_with = "ActivityStreamFlag::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamDislike, ActivityStreamEntityType::Dislike);
@@ -361,37 +368,28 @@ pub struct ActivityStreamDislike {
     #[serde(deserialize_with = "ActivityStreamDislike::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
-    _base: ActivityStreamActivity
+    _base: ActivityStreamActivity,
 }
 
 generate_basics!(ActivityStreamQuestion, ActivityStreamEntityType::Question);
 
 impl ActivityStreamQuestionProperties for ActivityStreamQuestion {
+    fn get_one_of(&self) -> &Option<Vec<ActivityStreamEntity>> {
+        &self.oneOf
+    }
 
-  fn get_one_of(&self) -> &Option<Vec<ActivityStreamEntity>> {
-      &self.oneOf
-  }
+    fn set_one_of<S, T: MaybeOptional<Vec<S>>>(&mut self, one_of: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
+        if let Some(one_of) = one_of.get_optional() {
+            let one_of: Vec<ActivityStreamEntity> =
+                one_of.into_iter().map(ActivityStreamEntity::from).collect();
+            self.oneOf = Some(one_of);
+        }
+    }
 
-  fn set_one_of<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(
-      &mut self,
-      one_of: T,
-  )
-  where
-      ActivityStreamEntity: From<S>,
-  {
-      if let Some(one_of) = one_of.get_optional() {
-          let one_of: Vec<ActivityStreamEntity> = one_of
-                  .into_iter()
-                  .map(ActivityStreamEntity::from)
-                  .collect();
-          self.oneOf = Some(one_of);
-      }
-  }
-
-    fn add_one_of<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(
-        &mut self,
-        one_of: T,
-    )
+    fn add_one_of<S, T: MaybeOptional<S>>(&mut self, one_of: T)
     where
         ActivityStreamEntity: From<S>,
     {
@@ -406,30 +404,22 @@ impl ActivityStreamQuestionProperties for ActivityStreamQuestion {
         }
     }
 
-  fn get_any_of(&self) -> &Option<Vec<ActivityStreamEntity>> {
-      &self.anyOf
-  }
+    fn get_any_of(&self) -> &Option<Vec<ActivityStreamEntity>> {
+        &self.anyOf
+    }
 
-  fn set_any_of<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(
-      &mut self,
-      any_of: T,
-  )
-  where
-      ActivityStreamEntity: From<S>,
-  {
-      if let Some(any_of) = any_of.get_optional() {
-          let any_of: Vec<ActivityStreamEntity> = any_of
-                  .into_iter()
-                  .map(ActivityStreamEntity::from)
-                  .collect();
-          self.anyOf = Some(any_of);
-      }
-  }
+    fn set_any_of<S, T: MaybeOptional<Vec<S>>>(&mut self, any_of: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
+        if let Some(any_of) = any_of.get_optional() {
+            let any_of: Vec<ActivityStreamEntity> =
+                any_of.into_iter().map(ActivityStreamEntity::from).collect();
+            self.anyOf = Some(any_of);
+        }
+    }
 
-    fn add_any_of<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(
-        &mut self,
-        any_of: T,
-    )
+    fn add_any_of<S, T: MaybeOptional<S>>(&mut self, any_of: T)
     where
         ActivityStreamEntity: From<S>,
     {
@@ -448,12 +438,14 @@ impl ActivityStreamQuestionProperties for ActivityStreamQuestion {
         &self.closed
     }
 
-    fn set_closed<S, T: MaybeOptional<S>>(&mut self, closed: T) where ActivityStreamQuestionClosed: From<S> {
+    fn set_closed<S, T: MaybeOptional<S>>(&mut self, closed: T)
+    where
+        ActivityStreamQuestionClosed: From<S>,
+    {
         if let Some(closed) = closed.get_optional() {
             self.closed = Some(Box::new(ActivityStreamQuestionClosed::from(closed)));
         }
     }
-
 }
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]

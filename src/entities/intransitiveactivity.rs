@@ -1,20 +1,25 @@
-use serde::{Serialize, Deserialize, Deserializer};
-use crate::entities::entity::{ActivityStreamEntityType, BoxedActivityStreamEntity, ActivityStreamEntity};
+use crate::content::*;
+use crate::entities::collection::ActivityStreamCollection;
+use crate::entities::entity::{
+    ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
+};
 use crate::entities::object::ActivityStreamObject;
 use crate::traits::properties::*;
-use ambassador::Delegate;
 use crate::{MaybeOptional, OneOrMultiple};
-use url::Url;
-use crate::entities::collection::ActivityStreamCollection;
-use crate::content::*;
+use ambassador::Delegate;
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Deserializer, Serialize};
+use url::Url;
 
 impl ActivityStreamIntransitiveActivityProperties for ActivityStreamIntransitiveActivity {
     fn get_actor(&self) -> &Option<BoxedActivityStreamEntity> {
         &self.actor
     }
 
-    fn set_actor<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, actor: T) where ActivityStreamEntity: From<S> {
+    fn set_actor<S, T: MaybeOptional<S>>(&mut self, actor: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
         if let Some(actor) = actor.get_optional() {
             self.actor = Some(Box::new(ActivityStreamEntity::from(actor)));
         }
@@ -24,7 +29,10 @@ impl ActivityStreamIntransitiveActivityProperties for ActivityStreamIntransitive
         &self.target
     }
 
-    fn set_target<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, target: T) where ActivityStreamEntity: From<S> {
+    fn set_target<S, T: MaybeOptional<S>>(&mut self, target: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
         if let Some(target) = target.get_optional() {
             self.target = Some(Box::new(ActivityStreamEntity::from(target)));
         }
@@ -34,7 +42,10 @@ impl ActivityStreamIntransitiveActivityProperties for ActivityStreamIntransitive
         &self.result
     }
 
-    fn set_result<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, result: T) where ActivityStreamEntity: From<S> {
+    fn set_result<S, T: MaybeOptional<S>>(&mut self, result: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
         if let Some(result) = result.get_optional() {
             self.result = Some(Box::new(ActivityStreamEntity::from(result)));
         }
@@ -44,7 +55,10 @@ impl ActivityStreamIntransitiveActivityProperties for ActivityStreamIntransitive
         &self.origin
     }
 
-    fn set_origin<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, origin: T) where ActivityStreamEntity: From<S> {
+    fn set_origin<S, T: MaybeOptional<S>>(&mut self, origin: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
         if let Some(origin) = origin.get_optional() {
             self.origin = Some(Box::new(ActivityStreamEntity::from(origin)));
         }
@@ -54,14 +68,22 @@ impl ActivityStreamIntransitiveActivityProperties for ActivityStreamIntransitive
         &self.instrument
     }
 
-    fn set_instrument<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, instrument: T) where ActivityStreamEntity: From<S> {
+    fn set_instrument<S, T: MaybeOptional<S>>(
+        &mut self,
+        instrument: T,
+    ) where
+        ActivityStreamEntity: From<S>,
+    {
         if let Some(instrument) = instrument.get_optional() {
             self.instrument = Some(Box::new(ActivityStreamEntity::from(instrument)));
         }
     }
 }
 
-generate_basics!(ActivityStreamIntransitiveActivity, ActivityStreamEntityType::IntransitiveActivity);
+generate_basics!(
+    ActivityStreamIntransitiveActivity,
+    ActivityStreamEntityType::IntransitiveActivity
+);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]

@@ -1,13 +1,13 @@
-use serde::{Serialize, Deserialize};
-use crate::entities::object::ActivityStreamObject;
 use crate::entities::activity::ActivityStreamActivity;
-use crate::entities::intransitiveactivity::ActivityStreamIntransitiveActivity;
+use crate::entities::activitytypes::*;
 use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::collectionpage::ActivityStreamCollectionPage;
+use crate::entities::intransitiveactivity::ActivityStreamIntransitiveActivity;
+use crate::entities::link::ActivityStreamLink;
+use crate::entities::object::ActivityStreamObject;
 use crate::entities::orderedcollection::ActivityStreamOrderedCollection;
 use crate::entities::orderedcollectionpage::ActivityStreamOrderedCollectionPage;
-use crate::entities::activitytypes::*;
-use crate::entities::link::ActivityStreamLink;
+use serde::{Deserialize, Serialize};
 use url::Url;
 
 //// Enum containing any valid ActivityStream Entity.
@@ -137,9 +137,8 @@ pub enum ActivityStreamEntityType {
     Mention,
 }
 
-
 impl Default for ActivityStreamEntityType {
-  fn default() -> Self {
-    ActivityStreamEntityType::Object
-  }
+    fn default() -> Self {
+        ActivityStreamEntityType::Object
+    }
 }

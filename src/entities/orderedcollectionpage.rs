@@ -1,29 +1,31 @@
-use serde::{Serialize, Deserialize, Deserializer};
-use crate::entities::entity::{ActivityStreamEntityType, BoxedActivityStreamEntity, ActivityStreamEntity};
-use crate::entities::object::ActivityStreamObject;
+use crate::content::*;
 use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::collectionpage::ActivityStreamCollectionPage;
+use crate::entities::entity::{
+    ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
+};
+use crate::entities::object::ActivityStreamObject;
 use crate::traits::properties::*;
-use ambassador::Delegate;
 use crate::{MaybeOptional, OneOrMultiple};
-use url::Url;
-use crate::content::*;
+use ambassador::Delegate;
 use chrono::{DateTime, Utc};
-
+use serde::{Deserialize, Deserializer, Serialize};
+use url::Url;
 
 impl ActivityStreamOrderedCollectionPageProperties for ActivityStreamOrderedCollectionPage {
+    fn get_start_index(&self) -> &Option<usize> {
+        &self.startIndex
+    }
 
-  fn get_start_index(&self) -> &Option<usize> {
-    &self.startIndex
-  }
-
-  fn set_start_index<T: MaybeOptional<usize>>(&mut self, start_index: T) {
-    self.startIndex = start_index.get_optional();
-  }
-
+    fn set_start_index<T: MaybeOptional<usize>>(&mut self, start_index: T) {
+        self.startIndex = start_index.get_optional();
+    }
 }
 
-generate_basics!(ActivityStreamOrderedCollectionPage, ActivityStreamEntityType::OrderedCollectionPage);
+generate_basics!(
+    ActivityStreamOrderedCollectionPage,
+    ActivityStreamEntityType::OrderedCollectionPage
+);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]

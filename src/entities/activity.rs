@@ -1,20 +1,25 @@
-use serde::{Serialize, Deserialize};
-use crate::entities::entity::{ActivityStreamEntityType, BoxedActivityStreamEntity, ActivityStreamEntity};
-use crate::entities::object::ActivityStreamObject;
-use crate::entities::collection::ActivityStreamCollection;
-use crate::traits::properties::*;
-use ambassador::Delegate;
-use crate::{MaybeOptional, OneOrMultiple};
-use url::Url;
 use crate::content::*;
+use crate::entities::collection::ActivityStreamCollection;
+use crate::entities::entity::{
+    ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
+};
+use crate::entities::object::ActivityStreamObject;
+use crate::traits::properties::*;
+use crate::{MaybeOptional, OneOrMultiple};
+use ambassador::Delegate;
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+use url::Url;
 
 impl ActivityStreamActivityProperties for ActivityStreamActivity {
     fn get_actor(&self) -> &Option<BoxedActivityStreamEntity> {
         &self.actor
     }
 
-    fn set_actor<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, actor: T) where ActivityStreamEntity: From<S> {
+    fn set_actor<S, T: MaybeOptional<S>>(&mut self, actor: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
         if let Some(actor) = actor.get_optional() {
             self.actor = Some(Box::new(ActivityStreamEntity::from(actor)));
         }
@@ -24,7 +29,10 @@ impl ActivityStreamActivityProperties for ActivityStreamActivity {
         &self.object
     }
 
-    fn set_object<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, object: T) where ActivityStreamEntity: From<S> {
+    fn set_object<S, T: MaybeOptional<S>>(&mut self, object: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
         if let Some(object) = object.get_optional() {
             self.object = Some(Box::new(ActivityStreamEntity::from(object)));
         }
@@ -34,7 +42,10 @@ impl ActivityStreamActivityProperties for ActivityStreamActivity {
         &self.target
     }
 
-    fn set_target<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, target: T) where ActivityStreamEntity: From<S> {
+    fn set_target<S, T: MaybeOptional<S>>(&mut self, target: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
         if let Some(target) = target.get_optional() {
             self.target = Some(Box::new(ActivityStreamEntity::from(target)));
         }
@@ -44,7 +55,10 @@ impl ActivityStreamActivityProperties for ActivityStreamActivity {
         &self.result
     }
 
-    fn set_result<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, result: T) where ActivityStreamEntity: From<S> {
+    fn set_result<S, T: MaybeOptional<S>>(&mut self, result: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
         if let Some(result) = result.get_optional() {
             self.result = Some(Box::new(ActivityStreamEntity::from(result)));
         }
@@ -54,7 +68,10 @@ impl ActivityStreamActivityProperties for ActivityStreamActivity {
         &self.origin
     }
 
-    fn set_origin<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, origin: T) where ActivityStreamEntity: From<S> {
+    fn set_origin<S, T: MaybeOptional<S>>(&mut self, origin: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
         if let Some(origin) = origin.get_optional() {
             self.origin = Some(Box::new(ActivityStreamEntity::from(origin)));
         }
@@ -64,13 +81,17 @@ impl ActivityStreamActivityProperties for ActivityStreamActivity {
         &self.instrument
     }
 
-    fn set_instrument<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, instrument: T) where ActivityStreamEntity: From<S> {
+    fn set_instrument<S, T: MaybeOptional<S>>(
+        &mut self,
+        instrument: T,
+    ) where
+        ActivityStreamEntity: From<S>,
+    {
         if let Some(instrument) = instrument.get_optional() {
             self.instrument = Some(Box::new(ActivityStreamEntity::from(instrument)));
         }
     }
 }
-
 
 generate_basics!(ActivityStreamActivity, ActivityStreamEntityType::Activity);
 
@@ -98,4 +119,3 @@ pub struct ActivityStreamActivity {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     instrument: Option<BoxedActivityStreamEntity>,
 }
-

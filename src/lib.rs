@@ -3,7 +3,7 @@ pub mod traits;
 pub mod content;
 pub mod entities;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 pub trait MaybeOptional<T> {
     fn get_optional(self) -> Option<T>;
     fn get_optional_boxed(self) -> Option<Box<T>>;

@@ -5,6 +5,7 @@ pub mod properties {
     use crate::MaybeOptional;
     use crate::entities::entity::{ActivityStreamEntity, BoxedActivityStreamEntity, ActivityStreamEntityType};
     use crate::entities::collection::ActivityStreamCollection;
+    use crate::entities::orderedcollection::ActivityStreamOrderedCollection;
     use crate::content::*;
     use chrono::{DateTime, Utc};
     use url::Url;
@@ -88,6 +89,7 @@ pub mod properties {
         fn set_duration<T: MaybeOptional<String>>(&mut self, duration: T);
     }
 
+    #[delegatable_trait]
     pub trait ActivityStreamActivityProperties {
         fn get_actor(&self) -> &Option<BoxedActivityStreamEntity>;
         fn set_actor<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, actor: T) where ActivityStreamEntity: From<S>;
@@ -103,6 +105,7 @@ pub mod properties {
         fn set_instrument<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, instrument: T) where ActivityStreamEntity: From<S>;
     }
 
+    #[delegatable_trait]
     pub trait ActivityStreamIntransitiveActivityProperties {
         fn get_actor(&self) -> &Option<BoxedActivityStreamEntity>;
         fn set_actor<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, actor: T) where ActivityStreamEntity: From<S>;
@@ -139,10 +142,36 @@ pub mod properties {
         fn set_prev<S, T: MaybeOptional<S>>(&mut self, prev: T) where ActivityStreamLinkableCollectionPage: From<S>;
     }
 
+    pub trait ActivityStreamQuestionProperties {
+        fn get_one_of(&self) -> &Option<Vec<ActivityStreamEntity>>;
+        fn set_one_of<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(&mut self, one_of: T) where ActivityStreamEntity: From<S>;
+        fn add_one_of<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, one_of: T) where ActivityStreamEntity: From<S>;
+        fn get_any_of(&self) -> &Option<Vec<ActivityStreamEntity>>;
+        fn set_any_of<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(&mut self, any_of: T) where ActivityStreamEntity: From<S>;
+        fn add_any_of<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, one_of: T) where ActivityStreamEntity: From<S>;
+        fn get_closed(&self) -> &Option<ActivityStreamQuestionClosed>;
+        fn set_closed<S, T: MaybeOptional<S>>(&mut self, closed: T) where ActivityStreamQuestionClosed: From<S>;
+    }
+
+    pub trait ActivityStreamActorProperties {
+        fn get_inbox(&self) -> &ActivityStreamOrderedCollection;
+        fn set_inbox(&mut self, inbox: ActivityStreamOrderedCollection);
+        fn get_outbox(&self) -> &ActivityStreamOrderedCollection;
+        fn set_outbox(&mut self, outbox: ActivityStreamOrderedCollection);
+        fn get_following(&self) -> &Option<ActivityStreamCollection>;
+        fn set_following<T: MaybeOptional<ActivityStreamCollection>>(&mut self, following: T);
+        fn get_followers(&self) -> &Option<ActivityStreamCollection>;
+        fn set_followers<T: MaybeOptional<ActivityStreamCollection>>(&mut self, followers: T);
+        fn get_liked(&self) -> &Option<ActivityStreamCollection>;
+        fn set_liked<T: MaybeOptional<ActivityStreamCollection>>(&mut self, liked: T);
+    }
+
     //// This trait allows access to all the basic elements of a core type
+    #[delegatable_trait]
     pub trait ActivityStreamEntityProperties {
         fn get_id(&self) -> &Option<Url>;
         fn set_id<T: MaybeOptional<Url>>(&mut self, id: T);
+        //FIXME: Return option, add function is_of_type
         fn get_type(&self) -> &ActivityStreamEntityType;
         fn set_type(&mut self, r#type: ActivityStreamEntityType);
         fn register_context(&mut self, context: Url);

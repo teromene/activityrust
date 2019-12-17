@@ -15,11 +15,15 @@ impl ActivityStreamEntityProperties for ActivityStreamLink {
     }
 
     fn get_type(&self) -> &ActivityStreamEntityType {
-      &self.r#type
+      if let Some(r#type) = &self.r#type {
+        r#type
+      } else {
+        panic!("The entity type is null. This should not happen. Make sure that the object is created with the \"create\" method and not the \"default\" method");
+      }
     }
 
     fn set_type(&mut self, r#type: ActivityStreamEntityType) {
-      self.r#type = r#type;
+      self.r#type = Some(r#type);
     }
 
     fn register_context(&mut self, new_context: Url) {
@@ -132,7 +136,8 @@ impl ActivityStreamLink {
 pub struct ActivityStreamLink {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     id: Option<Url>,
-    r#type: ActivityStreamEntityType,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(rename = "@context")]
     context: Option<OneOrMultiple<Url>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]

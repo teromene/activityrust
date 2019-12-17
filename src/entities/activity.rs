@@ -110,15 +110,6 @@ impl ActivityStreamActivity {
     new_object
   }
 
-  pub fn create_with_type(r#type: ActivityStreamActivityType) -> Self {
-    let object_context = Url::parse("https://www.w3.org/ns/activitystreams").unwrap();
-
-    let mut new_object = ActivityStreamActivity::default();
-    new_object.register_context(object_context);
-    new_object.set_type(ActivityStreamEntityType::ActivityType(r#type));
-    new_object
-  }
-
 }
 
 #[allow(non_snake_case)]
@@ -147,34 +138,3 @@ pub struct ActivityStreamActivity {
     instrument: Option<BoxedActivityStreamEntity>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, Copy, PartialEq)]
-pub enum ActivityStreamActivityType {
-    Accept,
-    Add,
-    Announce,
-    Arrive,
-    Block,
-    Create,
-    Delete,
-    Dislike,
-    Flag,
-    Follow,
-    Ignore,
-    Invite,
-    Join,
-    Leave,
-    Like,
-    Listen,
-    Move,
-    Offer,
-    Question,
-    Reject,
-    Read,
-    Remove,
-    TentativeReject,
-    TentativeAccept,
-    Travel,
-    Undo,
-    Update,
-    View,
-}

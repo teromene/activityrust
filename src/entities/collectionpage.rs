@@ -36,19 +36,6 @@ impl ActivityStreamEntityProperties for ActivityStreamCollectionPage {
 
 }
 
-/*
-
-
-    pub trait ActivityStreamCollectionPageProperties {
-        fn get_part_of(&self) -> &Option<ActivityStreamLinkableCollection>;
-        fn set_part_of<S, T: MaybeOptional<S>>(&mut self, part_of: T) where ActivityStreamLinkableCollection: From<S>;
-        fn get_next(&self) -> &Option<ActivityStreamLinkableCollectionPage>;
-        fn set_next<S, T: MaybeOptional<S>>(&mut self, next: T) where ActivityStreamLinkableCollectionPage: From<S>;
-        fn get_prev(&self) -> &Option<ActivityStreamLinkableCollectionPage>;
-        fn set_prev<S, T: MaybeOptional<S>>(&mut self, prev: T) where ActivityStreamLinkableCollectionPage: From<S>;
-    }
-*/
-
 impl ActivityStreamCollectionPageProperties for ActivityStreamCollectionPage {
   fn get_part_of(&self) -> &Option<ActivityStreamLinkableCollection> {
     &self.partOf

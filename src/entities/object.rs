@@ -464,28 +464,3 @@ pub struct ActivityStreamObject {
     duration: Option<String>, //FIXME: Duration not implemented as a valid type
 }
 
-pub struct ActivitySteamOrderedCollection {
-    /*id: Option<Url>,
-const r#type:ActivityStreamCoreType = ActivityStreamCoreType::OrderedCollection,
-totalItems: Option<ActivityStreamTotalItems>,
-current: Option<ActivityStreamCurrent>,
-first: Option<ActivityStreamFirst>,
-last: Option<ActivityStreamLast>,
-//FIXME: The page says items, but the example says orderedItems
-items: Option<ActivityStreamItems>,*/}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ActivitySteamCollectionPage {
-    /*id: Option<Url>,
-const r#type:ActivityStreamCoreType = ActivityStreamCoreType::CollectionPage,
-partOf: Option<ActivityStreamPartOf>,
-next: Option<ActivityStreamNext>,
-prev: Option<ActivityStreamPrev>,*/}
-
-//FIXME: Not done
-#[derive(Debug, Serialize, Deserialize)]
-pub struct ActivitySteamOrderedCollectionPage {
-    //id: Option<Url>,
-//const r#type:ActivityStreamCoreType = ActivityStreamCoreType::CollectionPage,
-//startIndex: Option<ActivityStreamStartIndex>,
-}

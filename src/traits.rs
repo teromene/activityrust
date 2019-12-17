@@ -7,11 +7,15 @@ pub mod properties {
     use crate::entities::collection::ActivityStreamCollection;
     use crate::entities::orderedcollection::ActivityStreamOrderedCollection;
     use crate::content::*;
+    use serde::Deserializer;
     use chrono::{DateTime, Utc};
     use url::Url;
 
     #[delegatable_trait]
     pub trait ActivityStreamObjectProperties {
+        fn get_id(&self) -> &Option<Url>;
+        fn set_id<T: MaybeOptional<Url>>(&mut self, id: T);
+        fn register_context(&mut self, context: Url);
         fn get_attachments(&self) -> &Option<Vec<ActivityStreamEntity>>;
         fn set_attachments<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(
             &mut self,
@@ -89,6 +93,26 @@ pub mod properties {
         fn set_duration<T: MaybeOptional<String>>(&mut self, duration: T);
     }
 
+    pub trait ActivityStreamLinkProperties {
+      fn get_id(&self) -> &Option<Url>;
+      fn set_id<T: MaybeOptional<Url>>(&mut self, id: T);
+      fn register_context(&mut self, context: Url);
+      fn get_href(&self) -> &Option<Url>;
+      fn set_href<T: MaybeOptional<Url>>(&mut self, href: T);
+      fn get_hreflang(&self) -> &Option<String>;
+      fn set_hreflang<T: MaybeOptional<String>>(&mut self, hreflang: T);
+      fn get_media_type(&self) -> &Option<String>;
+      fn set_media_type<T: MaybeOptional<String>>(&mut self, media_type: T);
+      fn get_name(&self) -> &Option<ActivityStreamMultilangString>;
+      fn set_name<S, T: MaybeOptional<S>>(&mut self, name: T) where ActivityStreamMultilangString: From<S>;
+      fn get_height(&self) -> &Option<usize>;
+      fn set_height<T: MaybeOptional<usize>>(&mut self, height: T);
+      fn get_width(&self) -> &Option<usize>;
+      fn set_width<T: MaybeOptional<usize>>(&mut self, width: T);
+      fn get_preview(&self) -> &Option<BoxedActivityStreamEntity>;
+      fn set_preview<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, audience: T) where ActivityStreamEntity: From<S>;
+    }
+
     #[delegatable_trait]
     pub trait ActivityStreamActivityProperties {
         fn get_actor(&self) -> &Option<BoxedActivityStreamEntity>;
@@ -133,6 +157,7 @@ pub mod properties {
         fn add_item<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, item: T) where ActivityStreamEntity: From<S>;
     }
 
+    #[delegatable_trait]
     pub trait ActivityStreamCollectionPageProperties {
         fn get_part_of(&self) -> &Option<ActivityStreamLinkableCollection>;
         fn set_part_of<S, T: MaybeOptional<S>>(&mut self, part_of: T) where ActivityStreamLinkableCollection: From<S>;
@@ -142,6 +167,7 @@ pub mod properties {
         fn set_prev<S, T: MaybeOptional<S>>(&mut self, prev: T) where ActivityStreamLinkableCollectionPage: From<S>;
     }
 
+    #[delegatable_trait]
     pub trait ActivityStreamQuestionProperties {
         fn get_one_of(&self) -> &Option<Vec<ActivityStreamEntity>>;
         fn set_one_of<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(&mut self, one_of: T) where ActivityStreamEntity: From<S>;
@@ -149,10 +175,11 @@ pub mod properties {
         fn get_any_of(&self) -> &Option<Vec<ActivityStreamEntity>>;
         fn set_any_of<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(&mut self, any_of: T) where ActivityStreamEntity: From<S>;
         fn add_any_of<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, one_of: T) where ActivityStreamEntity: From<S>;
-        fn get_closed(&self) -> &Option<ActivityStreamQuestionClosed>;
+        fn get_closed(&self) -> &Option<Box<ActivityStreamQuestionClosed>>;
         fn set_closed<S, T: MaybeOptional<S>>(&mut self, closed: T) where ActivityStreamQuestionClosed: From<S>;
     }
 
+    #[delegatable_trait]
     pub trait ActivityStreamActorProperties {
         fn get_inbox(&self) -> &ActivityStreamOrderedCollection;
         fn set_inbox(&mut self, inbox: ActivityStreamOrderedCollection);
@@ -166,15 +193,68 @@ pub mod properties {
         fn set_liked<T: MaybeOptional<ActivityStreamCollection>>(&mut self, liked: T);
     }
 
+    #[delegatable_trait]
+    pub trait ActivityStreamOrderedCollectionPageProperties {
+      fn get_start_index(&self) -> &Option<usize>;
+      fn set_start_index<T: MaybeOptional<usize>>(&mut self, start_index: T);
+  }
+
     //// This trait allows access to all the basic elements of a core type
     #[delegatable_trait]
     pub trait ActivityStreamEntityProperties {
-        fn get_id(&self) -> &Option<Url>;
-        fn set_id<T: MaybeOptional<Url>>(&mut self, id: T);
         //FIXME: Return option, add function is_of_type
-        fn get_type(&self) -> &ActivityStreamEntityType;
+        fn get_type(&self) -> &Option<ActivityStreamEntityType>;
         fn set_type(&mut self, r#type: ActivityStreamEntityType);
-        fn register_context(&mut self, context: Url);
+    }
+
+    pub trait DeserializeType {
+      fn deserialize_type<'de, D>(des: D) -> Result<Option<ActivityStreamEntityType>, D::Error> where D: Deserializer<'de>;
+    }
+
+    macro_rules! generate_basics {
+        ($objname:ty, $objtype:expr) => (
+
+        impl ActivityStreamEntityProperties for $objname {
+
+          fn get_type(&self) -> &Option<ActivityStreamEntityType> {
+            &self.r#type
+          }
+
+          fn set_type(&mut self, r#type: ActivityStreamEntityType) {
+            self.r#type = Some(r#type);
+          }
+
+        }
+
+
+        impl $objname {
+
+          pub fn create() -> Self {
+
+            let object_context = Url::parse("https://www.w3.org/ns/activitystreams").unwrap();
+
+            let mut new_object = <$objname>::default();
+            new_object.register_context(object_context);
+            new_object.set_type($objtype);
+            new_object
+          }
+
+        }
+
+        impl DeserializeType for $objname {
+
+          fn deserialize_type<'de, D>(des: D) -> Result<Option<ActivityStreamEntityType>, D::Error> where D: serde::Deserializer<'de> {
+
+            if let Ok(ax) = ActivityStreamEntityType::deserialize(des) {
+              if ax == $objtype {
+                return Ok(Some(ax));
+              }
+            }
+            Err(serde::de::Error::custom("Invalid constant !"))
+          }
+
+        }
+        );
     }
 
 }

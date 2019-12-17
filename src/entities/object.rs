@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use serde::{Serialize, Deserialize};
+use serde::{Serialize, Deserialize, Deserializer};
 use crate::traits::properties::*;
 use url::Url;
 
@@ -10,25 +10,15 @@ use crate::entities::entity::{ActivityStreamEntityType, ActivityStreamEntity, Bo
 use crate::entities::collection::ActivityStreamCollection;
 use crate::{MaybeOptional, OneOrMultiple};
 
-impl ActivityStreamEntityProperties for ActivityStreamObject {
+
+impl ActivityStreamObjectProperties for ActivityStreamObject {
+
     fn get_id(&self) -> &Option<Url> {
         &self.id
     }
 
     fn set_id<T: MaybeOptional<Url>>(&mut self, id: T) {
         self.id = id.get_optional();
-    }
-
-    fn get_type(&self) -> &ActivityStreamEntityType {
-      if let Some(r#type) = &self.r#type {
-        r#type
-      } else {
-        panic!("The entity type is null. This should not happen. Make sure that the object is created with the \"create\" method and not the \"default\" method");
-      }
-    }
-
-    fn set_type(&mut self, r#type: ActivityStreamEntityType) {
-      self.r#type = Some(r#type);
     }
 
     fn register_context(&mut self, new_context: Url) {
@@ -39,9 +29,6 @@ impl ActivityStreamEntityProperties for ActivityStreamObject {
         }
     }
 
-}
-
-impl ActivityStreamObjectProperties for ActivityStreamObject {
     fn get_attachments(&self) -> &Option<Vec<ActivityStreamEntity>> {
         &self.attachment
     }
@@ -387,27 +374,15 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
 
 }
 
-impl ActivityStreamObject {
 
-  pub fn create() -> Self {
+generate_basics!(ActivityStreamObject, ActivityStreamEntityType::Object);
 
-    let object_context = Url::parse("https://www.w3.org/ns/activitystreams").unwrap();
-
-    let mut new_object = ActivityStreamObject::default();
-    new_object.register_context(object_context);
-    new_object.set_type(ActivityStreamEntityType::Object);
-    new_object
-  }
-
-}
-
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 pub struct ActivityStreamObject {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     id: Option<Url>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamObject::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     #[serde(rename = "@context")]
@@ -417,7 +392,7 @@ pub struct ActivityStreamObject {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     attributedTo: Option<Vec<ActivityStreamEntity>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    audience: Option<BoxedActivityStreamEntity>, //The specs say "one or more" but example 69 is only a dict
+    audience: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     content: Option<ActivityStreamMultilangString>,
     #[serde(skip_serializing_if = "Option::is_none", default)]

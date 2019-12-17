@@ -9,33 +9,6 @@ use url::Url;
 use crate::content::*;
 use chrono::{DateTime, Utc};
 
-impl ActivityStreamEntityProperties for ActivityStreamActivity {
-    fn get_id(&self) -> &Option<Url> {
-        &self.id
-    }
-
-    fn set_id<T: MaybeOptional<Url>>(&mut self, id: T) {
-        self.id = id.get_optional();
-    }
-
-    fn get_type(&self) -> &ActivityStreamEntityType {
-      &self.r#type
-    }
-
-    fn set_type(&mut self, r#type: ActivityStreamEntityType) {
-      self.r#type = r#type;
-    }
-
-    fn register_context(&mut self, new_context: Url) {
-        if let Some(ref mut context) = self.context {
-            context.append(new_context);
-        } else {
-            self.context = Some(OneOrMultiple::Element(new_context));
-        }
-    }
-
-}
-
 impl ActivityStreamActivityProperties for ActivityStreamActivity {
     fn get_actor(&self) -> &Option<BoxedActivityStreamEntity> {
         &self.actor
@@ -98,28 +71,16 @@ impl ActivityStreamActivityProperties for ActivityStreamActivity {
     }
 }
 
-impl ActivityStreamActivity {
 
-  pub fn create() -> Self {
-
-    let object_context = Url::parse("https://www.w3.org/ns/activitystreams").unwrap();
-
-    let mut new_object = ActivityStreamActivity::default();
-    new_object.register_context(object_context);
-    new_object.set_type(ActivityStreamEntityType::Activity);
-    new_object
-  }
-
-}
+generate_basics!(ActivityStreamActivity, ActivityStreamEntityType::Activity);
 
 #[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
 pub struct ActivityStreamActivity {
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    id: Option<Url>,
-    r#type: ActivityStreamEntityType,
+    #[serde(deserialize_with = "ActivityStreamActivity::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(rename = "@context")]
     context: Option<OneOrMultiple<Url>>,
     #[serde(flatten)]

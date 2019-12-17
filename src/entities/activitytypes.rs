@@ -1,9 +1,9 @@
-use serde::{Serialize, Deserialize};
+#[allow(non_snake_case)]
+use serde::{Serialize, Deserialize, Deserializer};
 use crate::entities::entity::{ActivityStreamEntityType, BoxedActivityStreamEntity, ActivityStreamEntity};
 use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::activity::ActivityStreamActivity;
 use crate::entities::intransitiveactivity::ActivityStreamIntransitiveActivity;
-
 use crate::traits::properties::*;
 use ambassador::Delegate;
 use crate::{MaybeOptional, OneOrMultiple};
@@ -11,537 +11,362 @@ use url::Url;
 use crate::content::*;
 use chrono::{DateTime, Utc};
 
-impl ActivityStreamAccept {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamAccept::default();
-        activity.set_type(ActivityStreamEntityType::Accept);
-        activity
-    }
-}
+generate_basics!(ActivityStreamAccept, ActivityStreamEntityType::Accept);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamAccept {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamAccept::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamTentativeAccept {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamTentativeAccept::default();
-        activity.set_type(ActivityStreamEntityType::TentativeAccept);
-        activity
-    }
-}
+generate_basics!(ActivityStreamTentativeAccept, ActivityStreamEntityType::TentativeAccept);
 
-#[allow(non_snake_case)]
+
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamTentativeAccept {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamTentativeAccept::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamAccept
 }
 
-impl ActivityStreamAdd {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamAdd::default();
-        activity.set_type(ActivityStreamEntityType::Add);
-        activity
-    }
-}
+generate_basics!(ActivityStreamAdd, ActivityStreamEntityType::Add);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamAdd {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamAdd::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamArrive {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamArrive::default();
-        activity.set_type(ActivityStreamEntityType::Arrive);
-        activity
-    }
-}
+generate_basics!(ActivityStreamArrive, ActivityStreamEntityType::Arrive);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamIntransitiveActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamArrive {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamArrive::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamIntransitiveActivity
 }
 
-impl ActivityStreamCreate {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamCreate::default();
-        activity.set_type(ActivityStreamEntityType::Create);
-        activity
-    }
-}
+generate_basics!(ActivityStreamCreate, ActivityStreamEntityType::Create);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamCreate {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamCreate::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamDelete {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamDelete::default();
-        activity.set_type(ActivityStreamEntityType::Delete);
-        activity
-    }
-}
+generate_basics!(ActivityStreamDelete, ActivityStreamEntityType::Delete);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamDelete {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamDelete::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamFollow {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamFollow::default();
-        activity.set_type(ActivityStreamEntityType::Follow);
-        activity
-    }
-}
+generate_basics!(ActivityStreamFollow, ActivityStreamEntityType::Follow);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamFollow {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamFollow::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamIgnore {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamIgnore::default();
-        activity.set_type(ActivityStreamEntityType::Ignore);
-        activity
-    }
-}
+generate_basics!(ActivityStreamIgnore, ActivityStreamEntityType::Ignore);
 
 #[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamIgnore {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamIgnore::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamJoin {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamJoin::default();
-        activity.set_type(ActivityStreamEntityType::Join);
-        activity
-    }
-}
+generate_basics!(ActivityStreamJoin, ActivityStreamEntityType::Join);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamJoin {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamJoin::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamLeave {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamLeave::default();
-        activity.set_type(ActivityStreamEntityType::Leave);
-        activity
-    }
-}
+generate_basics!(ActivityStreamLeave, ActivityStreamEntityType::Leave);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamLeave {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamLeave::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamLike {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamLike::default();
-        activity.set_type(ActivityStreamEntityType::Like);
-        activity
-    }
-}
+generate_basics!(ActivityStreamLike, ActivityStreamEntityType::Like);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamLike {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamLike::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamOffer {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamOffer::default();
-        activity.set_type(ActivityStreamEntityType::Offer);
-        activity
-    }
-}
+generate_basics!(ActivityStreamOffer, ActivityStreamEntityType::Offer);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamOffer {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamOffer::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamInvite {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamInvite::default();
-        activity.set_type(ActivityStreamEntityType::Invite);
-        activity
-    }
-}
+generate_basics!(ActivityStreamInvite, ActivityStreamEntityType::Invite);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamInvite {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamInvite::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamOffer
 }
 
-impl ActivityStreamReject {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamReject::default();
-        activity.set_type(ActivityStreamEntityType::Reject);
-        activity
-    }
-}
+generate_basics!(ActivityStreamReject, ActivityStreamEntityType::Reject);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamReject {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamReject::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamTentativeReject {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamTentativeReject::default();
-        activity.set_type(ActivityStreamEntityType::TentativeReject);
-        activity
-    }
-}
+generate_basics!(ActivityStreamTentativeReject, ActivityStreamEntityType::TentativeReject);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamTentativeReject {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamTentativeReject::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamReject
 }
 
-impl ActivityStreamRemove {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamRemove::default();
-        activity.set_type(ActivityStreamEntityType::Remove);
-        activity
-    }
-}
+generate_basics!(ActivityStreamRemove, ActivityStreamEntityType::Remove);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamRemove {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamRemove::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamUndo {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamUndo::default();
-        activity.set_type(ActivityStreamEntityType::Undo);
-        activity
-    }
-}
+generate_basics!(ActivityStreamUndo, ActivityStreamEntityType::Undo);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamUndo {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamUndo::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamUpdate {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamUpdate::default();
-        activity.set_type(ActivityStreamEntityType::Update);
-        activity
-    }
-}
+generate_basics!(ActivityStreamUpdate, ActivityStreamEntityType::Update);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamUpdate {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamUpdate::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamView {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamView::default();
-        activity.set_type(ActivityStreamEntityType::View);
-        activity
-    }
-}
+generate_basics!(ActivityStreamView, ActivityStreamEntityType::View);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamView {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamView::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamListen {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamListen::default();
-        activity.set_type(ActivityStreamEntityType::Listen);
-        activity
-    }
-}
+generate_basics!(ActivityStreamListen, ActivityStreamEntityType::Listen);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamListen {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamListen::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamRead {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamRead::default();
-        activity.set_type(ActivityStreamEntityType::Read);
-        activity
-    }
-}
+generate_basics!(ActivityStreamRead, ActivityStreamEntityType::Read);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamRead {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamRead::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamMove {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamMove::default();
-        activity.set_type(ActivityStreamEntityType::Move);
-        activity
-    }
-}
+generate_basics!(ActivityStreamMove, ActivityStreamEntityType::Move);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamMove {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamMove::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamTravel {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamTravel::default();
-        activity.set_type(ActivityStreamEntityType::Travel);
-        activity
-    }
-}
+generate_basics!(ActivityStreamTravel, ActivityStreamEntityType::Travel);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamIntransitiveActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamTravel {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamTravel::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamIntransitiveActivity
 }
 
-impl ActivityStreamAnnounce {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamAnnounce::default();
-        activity.set_type(ActivityStreamEntityType::Announce);
-        activity
-    }
-}
+generate_basics!(ActivityStreamAnnounce, ActivityStreamEntityType::Announce);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamAnnounce {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamAnnounce::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamBlock {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamBlock::default();
-        activity.set_type(ActivityStreamEntityType::Block);
-        activity
-    }
-}
+generate_basics!(ActivityStreamBlock, ActivityStreamEntityType::Block);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamBlock {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamBlock::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamIgnore
 }
 
-impl ActivityStreamFlag {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamFlag::default();
-        activity.set_type(ActivityStreamEntityType::Flag);
-        activity
-    }
-}
+generate_basics!(ActivityStreamFlag, ActivityStreamEntityType::Flag);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamFlag {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamFlag::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamDislike {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamDislike::default();
-        activity.set_type(ActivityStreamEntityType::Dislike);
-        activity
-    }
-}
+generate_basics!(ActivityStreamDislike, ActivityStreamEntityType::Dislike);
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamDislike {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamDislike::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamActivity
 }
 
-impl ActivityStreamQuestion {
-    pub fn create() -> Self {
-        let mut activity = ActivityStreamQuestion::default();
-        activity.set_type(ActivityStreamEntityType::Question);
-        activity
-    }
-}
+generate_basics!(ActivityStreamQuestion, ActivityStreamEntityType::Question);
 
 impl ActivityStreamQuestionProperties for ActivityStreamQuestion {
-/*
-        fn set_one_of<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(&mut self, one_of: T) where ActivityStreamEntity: From<S>;
-        fn add_one_of<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, one_of: T) where ActivityStreamEntity: From<S>;
-        fn get_any_of(&self) -> &Option<Vec<ActivityStreamEntity>>;
-        fn set_any_of<S: ActivityStreamEntityProperties, T: MaybeOptional<Vec<S>>>(&mut self, any_of: T) where ActivityStreamEntity: From<S>;
-        fn add_any_of<S: ActivityStreamEntityProperties, T: MaybeOptional<S>>(&mut self, one_of: T) where ActivityStreamEntity: From<S>;
-        fn get_closed(&self) -> &Option<Vec<ActivityStreamQuestionClosed>>;
-        fn set_closed<S, T: MaybeOptional<S>>(&mut self, any_of: T) where ActivityStreamQuestionClosed: From<S>;
-*/
 
   fn get_one_of(&self) -> &Option<Vec<ActivityStreamEntity>> {
       &self.oneOf
@@ -619,25 +444,25 @@ impl ActivityStreamQuestionProperties for ActivityStreamQuestion {
         }
     }
 
-    fn get_closed(&self) -> &Option<ActivityStreamQuestionClosed> {
+    fn get_closed(&self) -> &Option<Box<ActivityStreamQuestionClosed>> {
         &self.closed
     }
 
     fn set_closed<S, T: MaybeOptional<S>>(&mut self, closed: T) where ActivityStreamQuestionClosed: From<S> {
         if let Some(closed) = closed.get_optional() {
-            self.closed = Some(ActivityStreamQuestionClosed::from(closed));
+            self.closed = Some(Box::new(ActivityStreamQuestionClosed::from(closed)));
         }
     }
 
 }
 
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 #[delegate(ActivityStreamIntransitiveActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
-#[delegate(ActivityStreamEntityProperties, target = "_base")]
 pub struct ActivityStreamQuestion {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamQuestion::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamIntransitiveActivity,
     #[serde(skip_serializing_if = "Option::is_none", default)]
@@ -645,5 +470,5 @@ pub struct ActivityStreamQuestion {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     anyOf: Option<Vec<ActivityStreamEntity>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    closed: Option<ActivityStreamQuestionClosed>,
+    closed: Option<Box<ActivityStreamQuestionClosed>>,
 }

@@ -7,4 +7,5 @@ pub mod activitytypes;
 pub mod collection;
 pub mod orderedcollection;
 pub mod collectionpage;
+pub mod orderedcollectionpage;
 pub mod actortypes;

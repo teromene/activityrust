@@ -2,6 +2,11 @@ use serde::{Serialize, Deserialize};
 use crate::entities::object::ActivityStreamObject;
 use crate::entities::activity::ActivityStreamActivity;
 use crate::entities::intransitiveactivity::ActivityStreamIntransitiveActivity;
+use crate::entities::collection::ActivityStreamCollection;
+use crate::entities::collectionpage::ActivityStreamCollectionPage;
+use crate::entities::orderedcollection::ActivityStreamOrderedCollection;
+use crate::entities::orderedcollectionpage::ActivityStreamOrderedCollectionPage;
+use crate::entities::activitytypes::*;
 use crate::entities::link::ActivityStreamLink;
 use url::Url;
 
@@ -9,10 +14,60 @@ use url::Url;
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 #[serde(untagged)]
 pub enum ActivityStreamEntity {
-    ActivityStreamObject(ActivityStreamObject),
-    ActivityStreamLink(ActivityStreamLink),
+    Object(ActivityStreamObject),
+    StreamLink(ActivityStreamLink),
     ActivityStreamActivity(ActivityStreamActivity),
     ActivityStreamIntransitiveActivity(ActivityStreamIntransitiveActivity),
+    ActivityStreamCollection(ActivityStreamCollection),
+    ActivityStreamOrderedCollection(ActivityStreamOrderedCollection),
+    ActivityStreamCollectionPage(ActivityStreamCollectionPage),
+    ActivityStreamOrderedCollectionPage(ActivityStreamOrderedCollectionPage),
+    ActivityStreamAccept(ActivityStreamAccept),
+    ActivityStreamAdd(ActivityStreamAdd),
+    ActivityStreamAnnounce(ActivityStreamAnnounce),
+    ActivityStreamArrive(ActivityStreamArrive),
+    ActivityStreamBlock(ActivityStreamBlock),
+    ActivityStreamCreate(ActivityStreamCreate),
+    ActivityStreamDelete(ActivityStreamDelete),
+    ActivityStreamDislike(ActivityStreamDislike),
+    ActivityStreamFlag(ActivityStreamFlag),
+    ActivityStreamFollow(ActivityStreamFollow),
+    ActivityStreamIgnore(ActivityStreamIgnore),
+    ActivityStreamInvite(ActivityStreamInvite),
+    ActivityStreamJoin(ActivityStreamJoin),
+    ActivityStreamLeave(ActivityStreamLeave),
+    ActivityStreamLike(ActivityStreamLike),
+    ActivityStreamListen(ActivityStreamListen),
+    ActivityStreamMove(ActivityStreamMove),
+    ActivityStreamOffer(ActivityStreamOffer),
+    ActivityStreamQuestion(ActivityStreamQuestion),
+    ActivityStreamReject(ActivityStreamReject),
+    ActivityStreamRead(ActivityStreamRead),
+    ActivityStreamRemove(ActivityStreamRemove),
+    ActivityStreamTentativeReject(ActivityStreamTentativeReject),
+    ActivityStreamTentativeAccept(ActivityStreamTentativeAccept),
+    ActivityStreamTravel(ActivityStreamTravel),
+    ActivityStreamUndo(ActivityStreamUndo),
+    ActivityStreamUpdate(ActivityStreamUpdate),
+    ActivityStreamView(ActivityStreamView),
+    /*ActivityStreamApplication(ActivityStreamApplication),
+    ActivityStreamGroup(ActivityStreamGroup),
+    ActivityStreamOrganization(ActivityStreamOrganization),
+    ActivityStreamPerson(ActivityStreamPerson),
+    ActivityStreamService(ActivityStreamService),
+    ActivityStreamArticle(ActivityStreamArticle),
+    ActivityStreamAudio(ActivityStreamAudio),
+    ActivityStreamDocument(ActivityStreamDocument),
+    ActivityStreamEvent(ActivityStreamEvent),
+    ActivityStreamImage(ActivityStreamImage),
+    ActivityStreamNote(ActivityStreamNote),
+    ActivityStreamPage(ActivityStreamPage),
+    ActivityStreamPlace(ActivityStreamPlace),
+    ActivityStreamProfile(ActivityStreamProfile),
+    ActivityStreamRelationship(ActivityStreamRelationship),
+    ActivityStreamTombstone(ActivityStreamTombstone),
+    ActivityStreamVideo(ActivityStreamVideo),
+    ActivityStreamMention(ActivityStreamMention), */
     Link(Url),
 }
 
@@ -24,7 +79,6 @@ pub type BoxedActivityStreamEntity = Box<ActivityStreamEntity>;
 pub enum ActivityStreamEntityType {
     Object,
     Link,
-    LinkObject,
     Activity,
     IntransitiveActivity,
     Collection,

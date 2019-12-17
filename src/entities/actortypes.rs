@@ -1,4 +1,4 @@
-use serde::{Serialize, Deserialize};
+use serde::{Serialize, Deserialize, Deserializer};
 use crate::entities::entity::{ActivityStreamEntityType, BoxedActivityStreamEntity, ActivityStreamEntity};
 use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::orderedcollection::ActivityStreamOrderedCollection;
@@ -12,18 +12,6 @@ use url::Url;
 use crate::content::*;
 use chrono::{DateTime, Utc};
 
-/*
-        fn get_inbox(&self) -> &ActivityStreamOrderedCollection;
-        fn set_inbox(&mut self, inbox: ActivityStreamOrderedCollection);
-        fn get_outbox(&self) -> &ActivityStreamOrderedCollection;
-        fn set_outbox(&mut self, outbox: ActivityStreamOrderedCollection);
-        fn get_following(&self) -> &Option<ActivityStreamCollection>;
-        fn set_following<S, T: MaybeOptional<S>>(&mut self, following: T) where ActivityStreamCollection: From<S>;
-        fn get_followers(&self) -> &Option<ActivityStreamCollection>;
-        fn set_followers<S, T: MaybeOptional<S>>(&mut self, followers: T) where ActivityStreamCollection: From<S>;
-        fn get_liked(&self) -> &Option<ActivityStreamCollection>;
-        fn set_liked<S, T: MaybeOptional<S>>(&mut self, liked: T) where ActivityStreamCollection: From<S>;
-*/
 impl ActivityStreamActorProperties for ActivityStreamActor_ {
         fn get_inbox(&self) -> &ActivityStreamOrderedCollection {
             &self.inbox
@@ -67,12 +55,9 @@ impl ActivityStreamActorProperties for ActivityStreamActor_ {
 }
 
 //// Type for the Actor data
-#[allow(non_snake_case)]
 #[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
-#[serde(deny_unknown_fields)]
 struct ActivityStreamActor_ {
     #[serde(flatten)]
-    _base: ActivityStreamActivity,
     inbox: ActivityStreamOrderedCollection,
     outbox: ActivityStreamOrderedCollection,
     #[serde(skip_serializing_if = "Option::is_none", default)]
@@ -81,4 +66,84 @@ struct ActivityStreamActor_ {
     followers: Option<ActivityStreamCollection>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     liked: Option<ActivityStreamCollection>,
+}
+
+generate_basics!(ActivityStreamApplication, ActivityStreamEntityType::Application);
+
+#[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
+#[delegate(ActivityStreamActivityProperties, target = "_base")]
+#[delegate(ActivityStreamObjectProperties, target = "_base")]
+#[delegate(ActivityStreamActorProperties, target= "_actorbase")]
+pub struct ActivityStreamApplication {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamApplication::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
+    #[serde(flatten)]
+    _base: ActivityStreamActivity,
+    #[serde(flatten)]
+    _actorbase: ActivityStreamActor_
+}
+
+generate_basics!(ActivityStreamGroup, ActivityStreamEntityType::Group);
+
+#[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
+#[delegate(ActivityStreamActivityProperties, target = "_base")]
+#[delegate(ActivityStreamObjectProperties, target = "_base")]
+#[delegate(ActivityStreamActorProperties, target= "_actorbase")]
+pub struct ActivityStreamGroup {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamGroup::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
+    #[serde(flatten)]
+    _base: ActivityStreamActivity,
+    #[serde(flatten)]
+    _actorbase: ActivityStreamActor_
+}
+
+generate_basics!(ActivityStreamOrganization, ActivityStreamEntityType::Organization);
+
+#[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
+#[delegate(ActivityStreamActivityProperties, target = "_base")]
+#[delegate(ActivityStreamObjectProperties, target = "_base")]
+#[delegate(ActivityStreamActorProperties, target= "_actorbase")]
+pub struct ActivityStreamOrganization {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamOrganization::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
+    #[serde(flatten)]
+    _base: ActivityStreamActivity,
+    #[serde(flatten)]
+    _actorbase: ActivityStreamActor_
+}
+
+generate_basics!(ActivityStreamPerson, ActivityStreamEntityType::Person);
+
+#[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
+#[delegate(ActivityStreamActivityProperties, target = "_base")]
+#[delegate(ActivityStreamObjectProperties, target = "_base")]
+#[delegate(ActivityStreamActorProperties, target= "_actorbase")]
+pub struct ActivityStreamPerson {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamPerson::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
+    #[serde(flatten)]
+    _base: ActivityStreamActivity,
+    #[serde(flatten)]
+    _actorbase: ActivityStreamActor_
+}
+
+generate_basics!(ActivityStreamService, ActivityStreamEntityType::Service);
+
+#[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
+#[delegate(ActivityStreamActivityProperties, target = "_base")]
+#[delegate(ActivityStreamObjectProperties, target = "_base")]
+#[delegate(ActivityStreamActorProperties, target= "_actorbase")]
+pub struct ActivityStreamService {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamService::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
+    #[serde(flatten)]
+    _base: ActivityStreamActivity,
+    #[serde(flatten)]
+    _actorbase: ActivityStreamActor_
 }

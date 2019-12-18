@@ -139,6 +139,7 @@ pub mod properties {
         fn set_duration<T: MaybeOptional<String>>(&mut self, duration: T);
     }
 
+    #[delegatable_trait]
     pub trait ActivityStreamLinkProperties {
         fn get_id(&self) -> &Option<Url>;
         fn set_id<T: MaybeOptional<Url>>(&mut self, id: T);
@@ -175,8 +176,11 @@ pub mod properties {
         fn set_object<S, T: MaybeOptional<S>>(&mut self, object: T)
         where
             ActivityStreamEntity: From<S>;
-        fn get_target(&self) -> &Option<BoxedActivityStreamEntity>;
-        fn set_target<S, T: MaybeOptional<S>>(&mut self, target: T)
+        fn get_targets(&self) -> &Option<Vec<ActivityStreamEntity>>;
+        fn set_targets<S, T: MaybeOptional<Vec<S>>>(&mut self, targets: T)
+        where
+            ActivityStreamEntity: From<S>;
+        fn add_target<S, T: MaybeOptional<S>>(&mut self, target: T)
         where
             ActivityStreamEntity: From<S>;
         fn get_result(&self) -> &Option<BoxedActivityStreamEntity>;
@@ -293,16 +297,54 @@ pub mod properties {
 
     #[delegatable_trait]
     pub trait ActivityStreamActorProperties {
-        fn get_inbox(&self) -> &ActivityStreamOrderedCollection;
-        fn set_inbox(&mut self, inbox: ActivityStreamOrderedCollection);
-        fn get_outbox(&self) -> &ActivityStreamOrderedCollection;
-        fn set_outbox(&mut self, outbox: ActivityStreamOrderedCollection);
-        fn get_following(&self) -> &Option<ActivityStreamCollection>;
-        fn set_following<T: MaybeOptional<ActivityStreamCollection>>(&mut self, following: T);
-        fn get_followers(&self) -> &Option<ActivityStreamCollection>;
-        fn set_followers<T: MaybeOptional<ActivityStreamCollection>>(&mut self, followers: T);
-        fn get_liked(&self) -> &Option<ActivityStreamCollection>;
-        fn set_liked<T: MaybeOptional<ActivityStreamCollection>>(&mut self, liked: T);
+      fn get_inbox(&self) -> &Option<ActivityStreamLinkableOrderedCollection>;
+      fn set_inbox<S, T: MaybeOptional<S>>(&mut self, inbox: T) where ActivityStreamLinkableOrderedCollection: From<S>;
+      fn get_outbox(&self) -> &Option<ActivityStreamLinkableOrderedCollection>;
+      fn set_outbox<S, T: MaybeOptional<S>>(&mut self, outbox: T) where ActivityStreamLinkableOrderedCollection: From<S>;
+      fn get_following(&self) -> &Option<ActivityStreamLinkableCollection>;
+      fn set_following<S, T: MaybeOptional<S>>(&mut self, following: T) where ActivityStreamLinkableCollection: From<S>;
+      fn get_followers(&self) -> &Option<ActivityStreamLinkableCollection>;
+      fn set_followers<S, T: MaybeOptional<S>>(&mut self, followers: T) where ActivityStreamLinkableCollection: From<S>;
+      fn get_liked(&self) -> &Option<ActivityStreamLinkableCollection>;
+      fn set_liked<S, T: MaybeOptional<S>>(&mut self, liked: T) where ActivityStreamLinkableCollection: From<S>;
+    }
+
+    pub trait ActivityStreamPlaceProperties {
+      fn get_accuracy(&self) -> &Option<f64>;
+      fn set_accuracy<T: MaybeOptional<f64>>(&mut self, accuracy: T);
+      fn get_altitude(&self) -> &Option<f64>;
+      fn set_altitude<T: MaybeOptional<f64>>(&mut self, altitude: T);
+      fn get_latitude(&self) -> &Option<f64>;
+      fn set_latitude<T: MaybeOptional<f64>>(&mut self, latitude: T);
+      fn get_longitude(&self) -> &Option<f64>;
+      fn set_longitude<T: MaybeOptional<f64>>(&mut self, longitude: T);
+      fn get_radius(&self) -> &Option<f64>;
+      fn set_radius<T: MaybeOptional<f64>>(&mut self, radius: T);
+      fn get_units(&self) -> &Option<ActivityStreamUnit>;
+      fn set_units<T: MaybeOptional<ActivityStreamUnit>>(&mut self, units: T);
+    }
+
+    pub trait ActivityStreamProfileProperties {
+      fn get_describes(&self) -> &Option<BoxedActivityStreamEntity>;
+
+      fn set_describes<S, T: MaybeOptional<S>>(
+        &mut self,
+        describes: T,
+    ) where
+        ActivityStreamEntity: From<S>;
+    }
+
+    pub trait ActivityStreamTombstoneProperties {
+      fn get_former_type(&self) -> &Option<BoxedActivityStreamEntity>;
+
+      fn set_former_type<S, T: MaybeOptional<S>>(
+        &mut self,
+        former_type: T,
+      ) where
+          ActivityStreamEntity: From<S>;
+
+      fn get_deleted(&self) -> &Option<DateTime<Utc>>;
+      fn set_deleted<T: MaybeOptional<DateTime<Utc>>>(&mut self, deleted: T);
     }
 
     #[delegatable_trait]
@@ -320,12 +362,12 @@ pub mod properties {
     }
 
     pub trait ActivityStreamRelationshipProperties {
-        fn get_subject(&self) -> &Option<ActivityStreamEntity>;
+        fn get_subject(&self) -> &Option<BoxedActivityStreamEntity>;
         fn set_subject<S, T: MaybeOptional<S>>(&mut self, subject: T)
         where
             ActivityStreamEntity: From<S>;
 
-        fn get_object(&self) -> &Option<ActivityStreamEntity>;
+        fn get_object(&self) -> &Option<BoxedActivityStreamEntity>;
 
         fn set_object<S, T: MaybeOptional<S>>(&mut self, object: T)
         where

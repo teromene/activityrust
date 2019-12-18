@@ -1,4 +1,5 @@
 use crate::entities::collection::ActivityStreamCollection;
+use crate::entities::orderedcollection::ActivityStreamOrderedCollection;
 use crate::entities::collectionpage::ActivityStreamCollectionPage;
 use crate::entities::entity::ActivityStreamEntity;
 use crate::entities::link::ActivityStreamLink;
@@ -55,6 +56,13 @@ pub enum ActivityStreamLinkableCollection {
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
+pub enum ActivityStreamLinkableOrderedCollection {
+    Url(Url),
+    OrderedCollection(ActivityStreamOrderedCollection),
+}
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum ActivityStreamLinkableCollectionPage {
     Url(Url),
     CollectionPage(ActivityStreamCollectionPage),
@@ -73,4 +81,21 @@ pub enum ActivityStreamQuestionClosed {
 pub enum ActivityStreamLinkableRelationship {
     Url(Url),
     Relationship(ActivityStreamRelationship),
+}
+
+//FIXME: URL type
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+pub enum ActivityStreamUnit {
+  #[serde(rename = "cm")]
+  Centimeter,
+  #[serde(rename = "feet")]
+  Feet,
+  #[serde(rename = "inches")]
+  Inches,
+  #[serde(rename = "km")]
+  Kilometer,
+  #[serde(rename = "m")]
+  Meter,
+  #[serde(rename = "miles")]
+  Miles,
 }

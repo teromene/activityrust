@@ -6,7 +6,7 @@ use crate::entities::entity::{
 };
 use crate::entities::intransitiveactivity::ActivityStreamIntransitiveActivity;
 use crate::traits::properties::*;
-use crate::{MaybeOptional, OneOrMultiple};
+use crate::MaybeOptional;
 use ambassador::Delegate;
 use chrono::{DateTime, Utc};
 #[allow(non_snake_case)]

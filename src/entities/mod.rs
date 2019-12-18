@@ -6,6 +6,7 @@ pub mod collectionpage;
 pub mod entity;
 pub mod intransitiveactivity;
 pub mod link;
+pub mod linktypes;
 pub mod object;
 pub mod objecttypes;
 pub mod orderedcollection;

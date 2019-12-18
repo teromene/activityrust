@@ -1,10 +1,13 @@
+use crate::entities::actortypes::*;
 use crate::entities::activity::ActivityStreamActivity;
 use crate::entities::activitytypes::*;
 use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::collectionpage::ActivityStreamCollectionPage;
 use crate::entities::intransitiveactivity::ActivityStreamIntransitiveActivity;
 use crate::entities::link::ActivityStreamLink;
+use crate::entities::linktypes::ActivityStreamMention;
 use crate::entities::object::ActivityStreamObject;
+use crate::entities::objecttypes::*;
 use crate::entities::orderedcollection::ActivityStreamOrderedCollection;
 use crate::entities::orderedcollectionpage::ActivityStreamOrderedCollectionPage;
 use serde::{Deserialize, Serialize};
@@ -14,7 +17,6 @@ use url::Url;
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 #[serde(untagged)]
 pub enum ActivityStreamEntity {
-    Object(ActivityStreamObject),
     StreamLink(ActivityStreamLink),
     ActivityStreamActivity(ActivityStreamActivity),
     ActivityStreamIntransitiveActivity(ActivityStreamIntransitiveActivity),
@@ -50,7 +52,7 @@ pub enum ActivityStreamEntity {
     ActivityStreamUndo(ActivityStreamUndo),
     ActivityStreamUpdate(ActivityStreamUpdate),
     ActivityStreamView(ActivityStreamView),
-    /*ActivityStreamApplication(ActivityStreamApplication),
+    ActivityStreamApplication(ActivityStreamApplication),
     ActivityStreamGroup(ActivityStreamGroup),
     ActivityStreamOrganization(ActivityStreamOrganization),
     ActivityStreamPerson(ActivityStreamPerson),
@@ -67,8 +69,26 @@ pub enum ActivityStreamEntity {
     ActivityStreamRelationship(ActivityStreamRelationship),
     ActivityStreamTombstone(ActivityStreamTombstone),
     ActivityStreamVideo(ActivityStreamVideo),
-    ActivityStreamMention(ActivityStreamMention), */
+    ActivityStreamMention(ActivityStreamMention),
+    Object(ActivityStreamObject), //The object is at the back, and does not check type to get fallbacks
+    #[serde(deserialize_with = "deserialize_link")]
     Link(Url),
+}
+
+fn deserialize_link<'de, D>(
+    des: D,
+) -> Result<Url, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    dbg!("Let's try to deser this...");
+    if let Ok(ax) = String::deserialize(des) {
+        if let Ok(ax) = Url::parse(&ax) {
+            let ax: Url = ax;
+            return Ok(ax);
+        }
+    }
+    Err(serde::de::Error::custom("Not an URL !"))
 }
 
 //// A Boxed version of an ActivityStreamEntity
@@ -135,6 +155,8 @@ pub enum ActivityStreamEntityType {
     Video,
     //Types for Link
     Mention,
+    #[serde(other)]
+    Other,
 }
 
 impl Default for ActivityStreamEntityType {

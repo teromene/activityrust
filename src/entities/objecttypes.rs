@@ -7,7 +7,7 @@ use crate::entities::entity::{
 use crate::entities::intransitiveactivity::ActivityStreamIntransitiveActivity;
 use crate::entities::object::ActivityStreamObject;
 use crate::traits::properties::*;
-use crate::{MaybeOptional, OneOrMultiple};
+use crate::MaybeOptional;
 use ambassador::Delegate;
 use chrono::{DateTime, Utc};
 #[allow(non_snake_case)]
@@ -20,7 +20,7 @@ generate_basics!(
 );
 
 impl ActivityStreamRelationshipProperties for ActivityStreamRelationship {
-    fn get_subject(&self) -> &Option<ActivityStreamEntity> {
+    fn get_subject(&self) -> &Option<BoxedActivityStreamEntity> {
         &self.subject
     }
 
@@ -29,11 +29,11 @@ impl ActivityStreamRelationshipProperties for ActivityStreamRelationship {
         ActivityStreamEntity: From<S>,
     {
         if let Some(subject) = subject.get_optional() {
-            self.subject = Some(ActivityStreamEntity::from(subject));
+            self.subject = Some(Box::new(ActivityStreamEntity::from(subject)));
         }
     }
 
-    fn get_object(&self) -> &Option<ActivityStreamEntity> {
+    fn get_object(&self) -> &Option<BoxedActivityStreamEntity> {
         &self.object
     }
 
@@ -42,7 +42,7 @@ impl ActivityStreamRelationshipProperties for ActivityStreamRelationship {
         ActivityStreamEntity: From<S>,
     {
         if let Some(object) = object.get_optional() {
-            self.object = Some(ActivityStreamEntity::from(object));
+            self.object = Some(Box::new(ActivityStreamEntity::from(object)));
         }
     }
 
@@ -71,9 +71,9 @@ pub struct ActivityStreamRelationship {
     #[serde(flatten)]
     _base: ActivityStreamObject,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    subject: Option<ActivityStreamEntity>,
+    subject: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    object: Option<ActivityStreamEntity>,
+    object: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     relationship: Option<Box<ActivityStreamLinkableRelationship>>,
 }
@@ -197,3 +197,160 @@ pub struct ActivityStreamEvent {
     #[serde(flatten)]
     _base: ActivityStreamObject,
 }
+
+generate_basics!(
+    ActivityStreamPlace,
+    ActivityStreamEntityType::Place
+);
+
+impl ActivityStreamPlaceProperties for ActivityStreamPlace {
+  fn get_accuracy(&self) -> &Option<f64> {
+    &self.accuracy
+  }
+
+  fn set_accuracy<T: MaybeOptional<f64>>(&mut self, accuracy: T) {
+    self.accuracy = accuracy.get_optional();
+  }
+
+  fn get_altitude(&self) -> &Option<f64> {
+    &self.altitude
+  }
+
+  fn set_altitude<T: MaybeOptional<f64>>(&mut self, altitude: T) {
+    self.altitude = altitude.get_optional();
+  }
+
+  fn get_latitude(&self) -> &Option<f64> {
+    &self.latitude
+  }
+
+  fn set_latitude<T: MaybeOptional<f64>>(&mut self, latitude: T) {
+    self.latitude = latitude.get_optional();
+  }
+
+  fn get_longitude(&self) -> &Option<f64> {
+    &self.longitude
+  }
+
+  fn set_longitude<T: MaybeOptional<f64>>(&mut self, longitude: T) {
+    self.longitude = longitude.get_optional();
+  }
+
+  fn get_radius(&self) -> &Option<f64> {
+    &self.radius
+  }
+
+  fn set_radius<T: MaybeOptional<f64>>(&mut self, radius: T) {
+    self.radius = radius.get_optional();
+  }
+
+  fn get_units(&self) -> &Option<ActivityStreamUnit> {
+    &self.units
+  }
+
+  fn set_units<T: MaybeOptional<ActivityStreamUnit>>(&mut self, units: T) {
+    self.units = units.get_optional();
+  }
+}
+
+#[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
+#[delegate(ActivityStreamObjectProperties, target = "_base")]
+pub struct ActivityStreamPlace {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamPlace::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
+    #[serde(flatten)]
+    _base: ActivityStreamObject,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    accuracy: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    altitude: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    latitude: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    longitude: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    radius: Option<f64>,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    units: Option<ActivityStreamUnit>,
+}
+
+generate_basics!(
+    ActivityStreamProfile,
+    ActivityStreamEntityType::Profile
+);
+
+impl ActivityStreamProfileProperties for ActivityStreamProfile {
+  fn get_describes(&self) -> &Option<BoxedActivityStreamEntity> {
+    &self.describes
+  }
+
+  fn set_describes<S, T: MaybeOptional<S>>(
+    &mut self,
+    describes: T,
+) where
+    ActivityStreamEntity: From<S> {
+      if let Some(describes) = describes.get_optional() {
+        self.describes = Some(Box::new(ActivityStreamEntity::from(describes)));
+      }
+    }
+
+}
+
+#[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
+#[delegate(ActivityStreamObjectProperties, target = "_base")]
+pub struct ActivityStreamProfile {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamProfile::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
+    #[serde(flatten)]
+    _base: ActivityStreamObject,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    describes: Option<BoxedActivityStreamEntity>,
+}
+
+generate_basics!(
+    ActivityStreamTombstone,
+    ActivityStreamEntityType::Tombstone
+);
+
+impl ActivityStreamTombstoneProperties for ActivityStreamTombstone {
+  fn get_former_type(&self) -> &Option<BoxedActivityStreamEntity> {
+    &self.formerType
+  }
+
+  fn set_former_type<S, T: MaybeOptional<S>>(
+    &mut self,
+    former_type: T,
+) where
+    ActivityStreamEntity: From<S> {
+      if let Some(former_type) = former_type.get_optional() {
+        self.formerType = Some(Box::new(ActivityStreamEntity::from(former_type)));
+      }
+    }
+
+    fn get_deleted(&self) -> &Option<DateTime<Utc>> {
+      &self.deleted
+    }
+
+    fn set_deleted<T: MaybeOptional<DateTime<Utc>>>(&mut self, deleted: T) {
+      self.deleted = deleted.get_optional();
+    }
+
+}
+
+
+#[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
+#[delegate(ActivityStreamObjectProperties, target = "_base")]
+pub struct ActivityStreamTombstone {
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(deserialize_with = "ActivityStreamTombstone::deserialize_type")]
+    r#type: Option<ActivityStreamEntityType>,
+    #[serde(flatten)]
+    _base: ActivityStreamObject,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    formerType: Option<BoxedActivityStreamEntity>,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    deleted: Option<DateTime<Utc>>,
+}
+

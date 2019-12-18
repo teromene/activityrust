@@ -10,7 +10,7 @@ use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::entity::{
     ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
 };
-use crate::{MaybeOptional, OneOrMultiple};
+use crate::{MaybeOptional, SingularVec};
 
 impl ActivityStreamObjectProperties for ActivityStreamObject {
     fn get_id(&self) -> &Option<Url> {
@@ -23,9 +23,9 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
 
     fn register_context(&mut self, new_context: Url) {
         if let Some(ref mut context) = self.context {
-            context.append(new_context);
+            context.push(new_context);
         } else {
-            self.context = Some(OneOrMultiple::Element(new_context));
+            self.context = Some(SingularVec(vec![new_context]));
         }
     }
 
@@ -66,6 +66,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         }
     }
 
+    //Replace Vec by OneOrMany
     fn get_attributed_to(&self) -> &Option<Vec<ActivityStreamEntity>> {
         &self.attributedTo
     }
@@ -391,11 +392,10 @@ pub struct ActivityStreamObject {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     id: Option<Url>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    #[serde(deserialize_with = "ActivityStreamObject::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     #[serde(rename = "@context")]
-    context: Option<OneOrMultiple<Url>>,
+    context: Option<SingularVec<Url>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     attachment: Option<Vec<ActivityStreamEntity>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]

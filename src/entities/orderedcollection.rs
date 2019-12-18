@@ -5,7 +5,7 @@ use crate::entities::entity::{
 };
 use crate::entities::object::ActivityStreamObject;
 use crate::traits::properties::*;
-use crate::{MaybeOptional, OneOrMultiple};
+use crate::MaybeOptional;
 use ambassador::Delegate;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Deserializer, Serialize};
@@ -97,10 +97,8 @@ generate_basics!(
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
 pub struct ActivityStreamOrderedCollection {
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    #[serde(deserialize_with = "ActivityStreamCollection::deserialize_type")]
+    #[serde(deserialize_with = "ActivityStreamOrderedCollection::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
-    #[serde(rename = "@context")]
-    context: Option<OneOrMultiple<Url>>,
     #[serde(flatten)]
     _base: ActivityStreamObject,
     #[serde(skip_serializing_if = "Option::is_none", default)]

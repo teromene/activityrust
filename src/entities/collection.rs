@@ -7,7 +7,7 @@ use crate::traits::properties::*;
 use crate::MaybeOptional;
 use ambassador::Delegate;
 use chrono::{DateTime, FixedOffset};
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use url::Url;
 
 impl ActivityStreamCollectionProperties for ActivityStreamCollection {
@@ -92,6 +92,7 @@ generate_basics!(
     ActivityStreamEntityType::Collection
 );
 
+#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
 pub struct ActivityStreamCollection {

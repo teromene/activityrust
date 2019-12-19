@@ -3,12 +3,11 @@ use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::entity::{
     ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
 };
-use crate::entities::object::ActivityStreamObject;
 use crate::traits::properties::*;
 use crate::MaybeOptional;
 use ambassador::Delegate;
 use chrono::{DateTime, FixedOffset};
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use url::Url;
 
 impl ActivityStreamCollectionPageProperties for ActivityStreamCollectionPage {
@@ -57,6 +56,7 @@ generate_basics!(
     ActivityStreamEntityType::CollectionPage
 );
 
+#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
 #[delegate(ActivityStreamCollectionProperties, target = "_base")]

@@ -8,7 +8,7 @@ use crate::traits::properties::*;
 use crate::MaybeOptional;
 use ambassador::Delegate;
 use chrono::{DateTime, FixedOffset};
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use url::Url;
 
 impl ActivityStreamIntransitiveActivityProperties for ActivityStreamIntransitiveActivity {
@@ -34,8 +34,10 @@ impl ActivityStreamIntransitiveActivityProperties for ActivityStreamIntransitive
         ActivityStreamEntity: From<S>,
     {
         if let Some(targets) = targets.get_optional() {
-            let targets: Vec<ActivityStreamEntity> =
-                targets.into_iter().map(ActivityStreamEntity::from).collect();
+            let targets: Vec<ActivityStreamEntity> = targets
+                .into_iter()
+                .map(ActivityStreamEntity::from)
+                .collect();
             self.target = Some(targets);
         }
     }
@@ -85,10 +87,8 @@ impl ActivityStreamIntransitiveActivityProperties for ActivityStreamIntransitive
         &self.instrument
     }
 
-    fn set_instrument<S, T: MaybeOptional<S>>(
-        &mut self,
-        instrument: T,
-    ) where
+    fn set_instrument<S, T: MaybeOptional<S>>(&mut self, instrument: T)
+    where
         ActivityStreamEntity: From<S>,
     {
         if let Some(instrument) = instrument.get_optional() {
@@ -114,7 +114,11 @@ pub struct ActivityStreamIntransitiveActivity {
     actor: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     object: Option<BoxedActivityStreamEntity>,
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::vecserializer")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::vecserializer"
+    )]
     target: Option<Vec<ActivityStreamEntity>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     result: Option<BoxedActivityStreamEntity>,

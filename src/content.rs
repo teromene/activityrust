@@ -1,13 +1,32 @@
 use crate::entities::collection::ActivityStreamCollection;
-use crate::entities::orderedcollection::ActivityStreamOrderedCollection;
 use crate::entities::collectionpage::ActivityStreamCollectionPage;
 use crate::entities::entity::ActivityStreamEntity;
 use crate::entities::link::ActivityStreamLink;
 use crate::entities::objecttypes::*;
+use crate::entities::orderedcollection::ActivityStreamOrderedCollection;
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use url::Url;
+
+#[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
+pub enum ActivityStreamContext {
+    Link(Url),
+    Map(HashMap<String, String>),
+}
+
+impl From<Url> for ActivityStreamContext {
+    fn from(url: Url) -> Self {
+        ActivityStreamContext::Link(url)
+    }
+}
+
+impl From<HashMap<String, String>> for ActivityStreamContext {
+    fn from(map: HashMap<String, String>) -> Self {
+        ActivityStreamContext::Map(map)
+    }
+}
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
@@ -90,16 +109,16 @@ pub enum ActivityStreamLinkableRelationship {
 //FIXME: URL type
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub enum ActivityStreamUnit {
-  #[serde(rename = "cm")]
-  Centimeter,
-  #[serde(rename = "feet")]
-  Feet,
-  #[serde(rename = "inches")]
-  Inches,
-  #[serde(rename = "km")]
-  Kilometer,
-  #[serde(rename = "m")]
-  Meter,
-  #[serde(rename = "miles")]
-  Miles,
+    #[serde(rename = "cm")]
+    Centimeter,
+    #[serde(rename = "feet")]
+    Feet,
+    #[serde(rename = "inches")]
+    Inches,
+    #[serde(rename = "km")]
+    Kilometer,
+    #[serde(rename = "m")]
+    Meter,
+    #[serde(rename = "miles")]
+    Miles,
 }

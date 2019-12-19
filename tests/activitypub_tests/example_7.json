@@ -1,0 +1,10 @@
+{
+  "@context": ["https://www.w3.org/ns/activitystreams",
+               {"@language": "en"}],
+  "type": "Note",
+  "id": "http://postparty.example/p/2415",
+  "content": "<p>I <em>really</em> like strawberries!</p>",
+  "source": {
+    "content": "I *really* like strawberries!",
+    "mediaType": "text/markdown"}
+}

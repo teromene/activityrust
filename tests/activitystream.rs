@@ -1,16 +1,18 @@
 extern crate activityrust;
 use activityrust::entities::entity::ActivityStreamEntity;
 
-use std::io::prelude::*;
 use std::fs::File;
-const TEST_COUNT: u32 = 159;
-
+use std::io::prelude::*;
 
 macro_rules! generate_test {
     ($testname: ident, $testid: expr) => {
         #[test]
         fn $testname() {
-            let mut dtx = File::open(format!("tests/activitystream_tests/example_{}.json", $testid)).unwrap();
+            let mut dtx = File::open(format!(
+                "tests/activitystream_tests/example_{}.json",
+                $testid
+            ))
+            .unwrap();
             let mut string = String::new();
             dtx.read_to_string(&mut string).unwrap();
             let decoded = serde_json::from_str::<ActivityStreamEntity>(&string).unwrap();

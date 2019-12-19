@@ -1,11 +1,9 @@
 use crate::traits::properties::*;
 use chrono::{DateTime, FixedOffset};
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use url::Url;
 
-use crate::content::{
-    ActivityStreamLinkableImage, ActivityStreamLinkableUrl, ActivityStreamMultilangString,
-};
+use crate::content::*;
 use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::entity::{
     ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
@@ -21,7 +19,11 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         self.id = id.get_optional();
     }
 
-    fn register_context(&mut self, new_context: Url) {
+    fn register_context<T>(&mut self, new_context: T)
+    where
+        ActivityStreamContext: From<T>,
+    {
+        let new_context: ActivityStreamContext = ActivityStreamContext::from(new_context);
         if let Some(ref mut context) = self.context {
             if !context.contains(&new_context) {
                 context.push(new_context);
@@ -30,15 +32,12 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
             self.context = Some(vec![new_context]);
         }
     }
-
     fn get_attachments(&self) -> &Option<Vec<ActivityStreamEntity>> {
         &self.attachment
     }
 
-    fn set_attachments<S, T: MaybeOptional<Vec<S>>>(
-        &mut self,
-        attachment: T,
-    ) where
+    fn set_attachments<S, T: MaybeOptional<Vec<S>>>(&mut self, attachment: T)
+    where
         ActivityStreamEntity: From<S>,
     {
         if let Some(attachment) = attachment.get_optional() {
@@ -51,10 +50,8 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         }
     }
 
-    fn add_attachment<S, T: MaybeOptional<S>>(
-        &mut self,
-        attachment: T,
-    ) where
+    fn add_attachment<S, T: MaybeOptional<S>>(&mut self, attachment: T)
+    where
         ActivityStreamEntity: From<S>,
     {
         if let Some(attachment) = attachment.get_optional() {
@@ -73,10 +70,8 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         &self.attributedTo
     }
 
-    fn set_attributed_to<S, T: MaybeOptional<Vec<S>>>(
-        &mut self,
-        attributed_to: T,
-    ) where
+    fn set_attributed_to<S, T: MaybeOptional<Vec<S>>>(&mut self, attributed_to: T)
+    where
         ActivityStreamEntity: From<S>,
     {
         if let Some(attributed_to) = attributed_to.get_optional() {
@@ -89,10 +84,8 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         }
     }
 
-    fn add_attributed_to<S, T: MaybeOptional<S>>(
-        &mut self,
-        attributed_to: T,
-    ) where
+    fn add_attributed_to<S, T: MaybeOptional<S>>(&mut self, attributed_to: T)
+    where
         ActivityStreamEntity: From<S>,
     {
         if let Some(attributed_to) = attributed_to.get_optional() {
@@ -144,10 +137,8 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
         &self.generator
     }
 
-    fn set_generator<S, T: MaybeOptional<S>>(
-        &mut self,
-        generator: T,
-    ) where
+    fn set_generator<S, T: MaybeOptional<S>>(&mut self, generator: T)
+    where
         ActivityStreamEntity: From<S>,
     {
         if let Some(generator) = generator.get_optional() {
@@ -394,6 +385,7 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
 
 generate_basics!(ActivityStreamObject, ActivityStreamEntityType::Object);
 
+#[allow(non_snake_case)]
 #[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
 pub struct ActivityStreamObject {
     #[serde(skip_serializing_if = "Option::is_none", default)]
@@ -402,10 +394,18 @@ pub struct ActivityStreamObject {
     r#type: Option<ActivityStreamEntityType>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     #[serde(rename = "@context", with = "crate::traits::vecserializer")]
-    context: Option<Vec<Url>>,
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::vecserializer")]
+    context: Option<Vec<ActivityStreamContext>>,
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::vecserializer"
+    )]
     attachment: Option<Vec<ActivityStreamEntity>>,
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::vecserializer")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::vecserializer"
+    )]
     attributedTo: Option<Vec<ActivityStreamEntity>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     audience: Option<BoxedActivityStreamEntity>,
@@ -413,7 +413,11 @@ pub struct ActivityStreamObject {
     content: Option<ActivityStreamMultilangString>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     name: Option<ActivityStreamMultilangString>,
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::optionaldateserializer")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::optionaldateserializer"
+    )]
     endTime: Option<DateTime<FixedOffset>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     generator: Option<BoxedActivityStreamEntity>,
@@ -422,33 +426,53 @@ pub struct ActivityStreamObject {
     #[serde(skip_serializing_if = "Option::is_none", default)]
     image: Option<ActivityStreamLinkableImage>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    inReplyTo: Option<BoxedActivityStreamEntity>, //While the specs say "one or more entities", it is implemented in Mastodon and others as an URI
+    inReplyTo: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     location: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     preview: Option<BoxedActivityStreamEntity>,
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::optionaldateserializer")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::optionaldateserializer"
+    )]
     published: Option<DateTime<FixedOffset>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     replies: Option<Box<ActivityStreamCollection>>,
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::optionaldateserializer")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::optionaldateserializer"
+    )]
     startTime: Option<DateTime<FixedOffset>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     summary: Option<ActivityStreamMultilangString>,
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::vecserializer")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::vecserializer"
+    )]
     tag: Option<Vec<ActivityStreamEntity>>,
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::optionaldateserializer")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::optionaldateserializer"
+    )]
     updated: Option<DateTime<FixedOffset>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     url: Option<ActivityStreamLinkableUrl>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    to: Option<BoxedActivityStreamEntity>, //FIXME: Test examples
+    to: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    bto: Option<BoxedActivityStreamEntity>, //FIXME: Test examples
+    bto: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    cc: Option<BoxedActivityStreamEntity>, //FIXME: Test examples
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::vecserializer")]
-    bcc: Option<Vec<ActivityStreamEntity>>, //FIXME: Test examples
+    cc: Option<BoxedActivityStreamEntity>,
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::vecserializer"
+    )]
+    bcc: Option<Vec<ActivityStreamEntity>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     mediaType: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none", default)]

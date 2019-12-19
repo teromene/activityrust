@@ -1,8 +1,7 @@
-use crate::entities::activity::ActivityStreamActivity;
-use crate::entities::link::ActivityStreamLink;
 use crate::entities::entity::{
     ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
 };
+use crate::entities::link::ActivityStreamLink;
 use serde::{Deserialize, Serialize};
 
 use crate::content::*;

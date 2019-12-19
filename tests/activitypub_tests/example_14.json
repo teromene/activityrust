@@ -1,0 +1,8 @@
+{
+  "@context": "https://www.w3.org/ns/activitystreams",
+  "id": "https://example.com/~alice/note/72",
+  "type": "Tombstone",
+  "published": "2015-02-10T15:04:55Z",
+  "updated": "2015-02-10T15:04:55Z",
+  "deleted": "2015-02-10T15:04:55Z"
+}

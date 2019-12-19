@@ -1,6 +1,5 @@
 use crate::entities::activity::ActivityStreamActivity;
 use crate::entities::collection::ActivityStreamCollection;
-use crate::entities::orderedcollection::ActivityStreamOrderedCollection;
 use crate::entities::entity::{
     ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
 };
@@ -8,7 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::content::*;
 use crate::traits::properties::*;
-use crate::{MaybeOptional};
+use crate::MaybeOptional;
 use ambassador::Delegate;
 use chrono::{DateTime, FixedOffset};
 use url::Url;
@@ -18,29 +17,38 @@ impl ActivityStreamActorProperties for ActivityStreamActor_ {
         &self.inbox
     }
 
-    fn set_inbox<S, T: MaybeOptional<S>>(&mut self, inbox: T) where ActivityStreamLinkableOrderedCollection: From<S> {
-      if let Some(inbox) = inbox.get_optional() {
-        self.inbox = Some(ActivityStreamLinkableOrderedCollection::from(inbox));
-      }
+    fn set_inbox<S, T: MaybeOptional<S>>(&mut self, inbox: T)
+    where
+        ActivityStreamLinkableOrderedCollection: From<S>,
+    {
+        if let Some(inbox) = inbox.get_optional() {
+            self.inbox = Some(ActivityStreamLinkableOrderedCollection::from(inbox));
+        }
     }
 
     fn get_outbox(&self) -> &Option<ActivityStreamLinkableOrderedCollection> {
         &self.outbox
     }
 
-    fn set_outbox<S, T: MaybeOptional<S>>(&mut self, outbox: T) where ActivityStreamLinkableOrderedCollection: From<S> {
-      if let Some(outbox) = outbox.get_optional() {
-        self.outbox = Some(ActivityStreamLinkableOrderedCollection::from(outbox));
-      }
+    fn set_outbox<S, T: MaybeOptional<S>>(&mut self, outbox: T)
+    where
+        ActivityStreamLinkableOrderedCollection: From<S>,
+    {
+        if let Some(outbox) = outbox.get_optional() {
+            self.outbox = Some(ActivityStreamLinkableOrderedCollection::from(outbox));
+        }
     }
 
     fn get_following(&self) -> &Option<ActivityStreamLinkableCollection> {
         &self.following
     }
 
-    fn set_following<S, T: MaybeOptional<S>>(&mut self, following: T) where ActivityStreamLinkableCollection: From<S> {
+    fn set_following<S, T: MaybeOptional<S>>(&mut self, following: T)
+    where
+        ActivityStreamLinkableCollection: From<S>,
+    {
         if let Some(following) = following.get_optional() {
-          self.following = Some(ActivityStreamLinkableCollection::from(following));
+            self.following = Some(ActivityStreamLinkableCollection::from(following));
         }
     }
 
@@ -48,9 +56,12 @@ impl ActivityStreamActorProperties for ActivityStreamActor_ {
         &self.followers
     }
 
-    fn set_followers<S, T: MaybeOptional<S>>(&mut self, followers: T) where ActivityStreamLinkableCollection: From<S> {
+    fn set_followers<S, T: MaybeOptional<S>>(&mut self, followers: T)
+    where
+        ActivityStreamLinkableCollection: From<S>,
+    {
         if let Some(followers) = followers.get_optional() {
-          self.followers = Some(ActivityStreamLinkableCollection::from(followers));
+            self.followers = Some(ActivityStreamLinkableCollection::from(followers));
         }
     }
 
@@ -58,14 +69,38 @@ impl ActivityStreamActorProperties for ActivityStreamActor_ {
         &self.liked
     }
 
-    fn set_liked<S, T: MaybeOptional<S>>(&mut self, liked: T) where ActivityStreamLinkableCollection: From<S> {
+    fn set_liked<S, T: MaybeOptional<S>>(&mut self, liked: T)
+    where
+        ActivityStreamLinkableCollection: From<S>,
+    {
         if let Some(liked) = liked.get_optional() {
-          self.liked = Some(ActivityStreamLinkableCollection::from(liked));
+            self.liked = Some(ActivityStreamLinkableCollection::from(liked));
+        }
+    }
+
+    fn get_preferred_username(&self) -> &Option<String> {
+        &self.preferredUsername
+    }
+
+    fn set_preferred_username<T: MaybeOptional<String>>(&mut self, preferred_username: T) {
+        self.preferredUsername = preferred_username.get_optional();
+    }
+
+    fn get_streams(&self) -> &Option<Vec<ActivityStreamCollection>> {
+        &self.streams
+    }
+    fn set_streams<T: MaybeOptional<Vec<ActivityStreamCollection>>>(&mut self, streams: T) {
+        self.streams = streams.get_optional();
+    }
+    fn add_stream(&mut self, stream: ActivityStreamCollection) {
+        if let Some(ref mut streams) = &mut self.streams {
+            streams.push(stream);
         }
     }
 }
 
 //// Type for the Actor data
+#[allow(non_snake_case)]
 #[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
 struct ActivityStreamActor_ {
     #[serde(skip_serializing_if = "Option::is_none", default)]
@@ -78,6 +113,10 @@ struct ActivityStreamActor_ {
     followers: Option<ActivityStreamLinkableCollection>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     liked: Option<ActivityStreamLinkableCollection>,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    streams: Option<Vec<ActivityStreamCollection>>, //FIXME: Implement getter setters
+    #[serde(skip_serializing_if = "Option::is_none", default)]
+    preferredUsername: Option<String>,
 }
 
 generate_basics!(

@@ -10,7 +10,7 @@ use crate::MaybeOptional;
 use ambassador::Delegate;
 use chrono::{DateTime, FixedOffset};
 #[allow(non_snake_case)]
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use url::Url;
 
 generate_basics!(ActivityStreamAccept, ActivityStreamEntityType::Accept);
@@ -448,6 +448,7 @@ impl ActivityStreamQuestionProperties for ActivityStreamQuestion {
     }
 }
 
+#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamIntransitiveActivityProperties, target = "_base")]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
@@ -457,9 +458,17 @@ pub struct ActivityStreamQuestion {
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamIntransitiveActivity,
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::vecserializer")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::vecserializer"
+    )]
     oneOf: Option<Vec<ActivityStreamEntity>>,
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::vecserializer")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::vecserializer"
+    )]
     anyOf: Option<Vec<ActivityStreamEntity>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     closed: Option<Box<ActivityStreamQuestionClosed>>,

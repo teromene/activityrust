@@ -1,17 +1,15 @@
 use crate::content::*;
-use crate::entities::activity::ActivityStreamActivity;
 use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::entity::{
     ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
 };
-use crate::entities::intransitiveactivity::ActivityStreamIntransitiveActivity;
 use crate::entities::object::ActivityStreamObject;
 use crate::traits::properties::*;
 use crate::MaybeOptional;
 use ambassador::Delegate;
 use chrono::{DateTime, FixedOffset};
 #[allow(non_snake_case)]
-use serde::{Deserialize, Deserializer, Serialize};
+use serde::{Deserialize, Serialize};
 use url::Url;
 
 generate_basics!(
@@ -62,6 +60,7 @@ impl ActivityStreamRelationshipProperties for ActivityStreamRelationship {
     }
 }
 
+#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
 pub struct ActivityStreamRelationship {
@@ -78,10 +77,7 @@ pub struct ActivityStreamRelationship {
     relationship: Option<Box<ActivityStreamLinkableRelationship>>,
 }
 
-generate_basics!(
-    ActivityStreamArticle,
-    ActivityStreamEntityType::Article
-);
+generate_basics!(ActivityStreamArticle, ActivityStreamEntityType::Article);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
@@ -93,10 +89,7 @@ pub struct ActivityStreamArticle {
     _base: ActivityStreamObject,
 }
 
-generate_basics!(
-    ActivityStreamDocument,
-    ActivityStreamEntityType::Document
-);
+generate_basics!(ActivityStreamDocument, ActivityStreamEntityType::Document);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
@@ -108,10 +101,7 @@ pub struct ActivityStreamDocument {
     _base: ActivityStreamObject,
 }
 
-generate_basics!(
-    ActivityStreamAudio,
-    ActivityStreamEntityType::Audio
-);
+generate_basics!(ActivityStreamAudio, ActivityStreamEntityType::Audio);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
@@ -123,10 +113,7 @@ pub struct ActivityStreamAudio {
     _base: ActivityStreamDocument,
 }
 
-generate_basics!(
-    ActivityStreamImage,
-    ActivityStreamEntityType::Image
-);
+generate_basics!(ActivityStreamImage, ActivityStreamEntityType::Image);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
@@ -138,10 +125,7 @@ pub struct ActivityStreamImage {
     _base: ActivityStreamDocument,
 }
 
-generate_basics!(
-    ActivityStreamVideo,
-    ActivityStreamEntityType::Video
-);
+generate_basics!(ActivityStreamVideo, ActivityStreamEntityType::Video);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
@@ -153,10 +137,7 @@ pub struct ActivityStreamVideo {
     _base: ActivityStreamDocument,
 }
 
-generate_basics!(
-    ActivityStreamNote,
-    ActivityStreamEntityType::Note
-);
+generate_basics!(ActivityStreamNote, ActivityStreamEntityType::Note);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
@@ -168,10 +149,7 @@ pub struct ActivityStreamNote {
     _base: ActivityStreamObject,
 }
 
-generate_basics!(
-    ActivityStreamPage,
-    ActivityStreamEntityType::Page
-);
+generate_basics!(ActivityStreamPage, ActivityStreamEntityType::Page);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
@@ -183,10 +161,7 @@ pub struct ActivityStreamPage {
     _base: ActivityStreamDocument,
 }
 
-generate_basics!(
-    ActivityStreamEvent,
-    ActivityStreamEntityType::Event
-);
+generate_basics!(ActivityStreamEvent, ActivityStreamEntityType::Event);
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
@@ -198,59 +173,56 @@ pub struct ActivityStreamEvent {
     _base: ActivityStreamObject,
 }
 
-generate_basics!(
-    ActivityStreamPlace,
-    ActivityStreamEntityType::Place
-);
+generate_basics!(ActivityStreamPlace, ActivityStreamEntityType::Place);
 
 impl ActivityStreamPlaceProperties for ActivityStreamPlace {
-  fn get_accuracy(&self) -> &Option<f64> {
-    &self.accuracy
-  }
+    fn get_accuracy(&self) -> &Option<f64> {
+        &self.accuracy
+    }
 
-  fn set_accuracy<T: MaybeOptional<f64>>(&mut self, accuracy: T) {
-    self.accuracy = accuracy.get_optional();
-  }
+    fn set_accuracy<T: MaybeOptional<f64>>(&mut self, accuracy: T) {
+        self.accuracy = accuracy.get_optional();
+    }
 
-  fn get_altitude(&self) -> &Option<f64> {
-    &self.altitude
-  }
+    fn get_altitude(&self) -> &Option<f64> {
+        &self.altitude
+    }
 
-  fn set_altitude<T: MaybeOptional<f64>>(&mut self, altitude: T) {
-    self.altitude = altitude.get_optional();
-  }
+    fn set_altitude<T: MaybeOptional<f64>>(&mut self, altitude: T) {
+        self.altitude = altitude.get_optional();
+    }
 
-  fn get_latitude(&self) -> &Option<f64> {
-    &self.latitude
-  }
+    fn get_latitude(&self) -> &Option<f64> {
+        &self.latitude
+    }
 
-  fn set_latitude<T: MaybeOptional<f64>>(&mut self, latitude: T) {
-    self.latitude = latitude.get_optional();
-  }
+    fn set_latitude<T: MaybeOptional<f64>>(&mut self, latitude: T) {
+        self.latitude = latitude.get_optional();
+    }
 
-  fn get_longitude(&self) -> &Option<f64> {
-    &self.longitude
-  }
+    fn get_longitude(&self) -> &Option<f64> {
+        &self.longitude
+    }
 
-  fn set_longitude<T: MaybeOptional<f64>>(&mut self, longitude: T) {
-    self.longitude = longitude.get_optional();
-  }
+    fn set_longitude<T: MaybeOptional<f64>>(&mut self, longitude: T) {
+        self.longitude = longitude.get_optional();
+    }
 
-  fn get_radius(&self) -> &Option<f64> {
-    &self.radius
-  }
+    fn get_radius(&self) -> &Option<f64> {
+        &self.radius
+    }
 
-  fn set_radius<T: MaybeOptional<f64>>(&mut self, radius: T) {
-    self.radius = radius.get_optional();
-  }
+    fn set_radius<T: MaybeOptional<f64>>(&mut self, radius: T) {
+        self.radius = radius.get_optional();
+    }
 
-  fn get_units(&self) -> &Option<ActivityStreamUnit> {
-    &self.units
-  }
+    fn get_units(&self) -> &Option<ActivityStreamUnit> {
+        &self.units
+    }
 
-  fn set_units<T: MaybeOptional<ActivityStreamUnit>>(&mut self, units: T) {
-    self.units = units.get_optional();
-  }
+    fn set_units<T: MaybeOptional<ActivityStreamUnit>>(&mut self, units: T) {
+        self.units = units.get_optional();
+    }
 }
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
@@ -275,26 +247,21 @@ pub struct ActivityStreamPlace {
     units: Option<ActivityStreamUnit>,
 }
 
-generate_basics!(
-    ActivityStreamProfile,
-    ActivityStreamEntityType::Profile
-);
+generate_basics!(ActivityStreamProfile, ActivityStreamEntityType::Profile);
 
 impl ActivityStreamProfileProperties for ActivityStreamProfile {
-  fn get_describes(&self) -> &Option<BoxedActivityStreamEntity> {
-    &self.describes
-  }
-
-  fn set_describes<S, T: MaybeOptional<S>>(
-    &mut self,
-    describes: T,
-) where
-    ActivityStreamEntity: From<S> {
-      if let Some(describes) = describes.get_optional() {
-        self.describes = Some(Box::new(ActivityStreamEntity::from(describes)));
-      }
+    fn get_describes(&self) -> &Option<BoxedActivityStreamEntity> {
+        &self.describes
     }
 
+    fn set_describes<S, T: MaybeOptional<S>>(&mut self, describes: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
+        if let Some(describes) = describes.get_optional() {
+            self.describes = Some(Box::new(ActivityStreamEntity::from(describes)));
+        }
+    }
 }
 
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
@@ -309,34 +276,27 @@ pub struct ActivityStreamProfile {
     describes: Option<BoxedActivityStreamEntity>,
 }
 
-generate_basics!(
-    ActivityStreamTombstone,
-    ActivityStreamEntityType::Tombstone
-);
+generate_basics!(ActivityStreamTombstone, ActivityStreamEntityType::Tombstone);
 
 impl ActivityStreamTombstoneProperties for ActivityStreamTombstone {
-  fn get_former_type(&self) -> &Option<ActivityStreamEntityType> {
-    &self.formerType
-  }
+    fn get_former_type(&self) -> &Option<ActivityStreamEntityType> {
+        &self.formerType
+    }
 
-  fn set_former_type<T: MaybeOptional<ActivityStreamEntityType>>(
-    &mut self,
-    former_type: T,
-    ) {
-      self.formerType = former_type.get_optional();
+    fn set_former_type<T: MaybeOptional<ActivityStreamEntityType>>(&mut self, former_type: T) {
+        self.formerType = former_type.get_optional();
     }
 
     fn get_deleted(&self) -> &Option<DateTime<FixedOffset>> {
-      &self.deleted
+        &self.deleted
     }
 
     fn set_deleted<T: MaybeOptional<DateTime<FixedOffset>>>(&mut self, deleted: T) {
-      self.deleted = deleted.get_optional();
+        self.deleted = deleted.get_optional();
     }
-
 }
 
-
+#[allow(non_snake_case)]
 #[derive(Debug, Default, Delegate, Serialize, Deserialize, PartialEq)]
 #[delegate(ActivityStreamObjectProperties, target = "_base")]
 pub struct ActivityStreamTombstone {
@@ -347,7 +307,10 @@ pub struct ActivityStreamTombstone {
     _base: ActivityStreamObject,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     formerType: Option<ActivityStreamEntityType>,
-    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::optionaldateserializer")]
+    #[serde(
+        skip_serializing_if = "Option::is_none",
+        default,
+        with = "crate::traits::optionaldateserializer"
+    )]
     deleted: Option<DateTime<FixedOffset>>,
 }
-

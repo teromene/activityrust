@@ -1,6 +1,6 @@
-use crate::entities::actortypes::*;
 use crate::entities::activity::ActivityStreamActivity;
 use crate::entities::activitytypes::*;
+use crate::entities::actortypes::*;
 use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::collectionpage::ActivityStreamCollectionPage;
 use crate::entities::intransitiveactivity::ActivityStreamIntransitiveActivity;
@@ -76,9 +76,7 @@ pub enum ActivityStreamEntity {
     Link(Url),
 }
 
-fn deserialize_link<'de, D>(
-    des: D,
-) -> Result<Url, D::Error>
+fn deserialize_link<'de, D>(des: D) -> Result<Url, D::Error>
 where
     D: serde::Deserializer<'de>,
 {

@@ -23,7 +23,9 @@ impl ActivityStreamObjectProperties for ActivityStreamObject {
 
     fn register_context(&mut self, new_context: Url) {
         if let Some(ref mut context) = self.context {
-            context.push(new_context);
+            if !context.contains(&new_context) {
+                context.push(new_context);
+            }
         } else {
             self.context = Some(vec![new_context]);
         }

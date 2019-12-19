@@ -4,7 +4,7 @@ use crate::entities::collectionpage::ActivityStreamCollectionPage;
 use crate::entities::entity::ActivityStreamEntity;
 use crate::entities::link::ActivityStreamLink;
 use crate::entities::objecttypes::*;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use url::Url;
@@ -35,9 +35,11 @@ impl From<HashMap<String, String>> for ActivityStreamMultilangString {
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
+#[serde(untagged)]
 pub enum ActivityStreamLinkableImage {
     Link(ActivityStreamLink),
-    //FIXME: Image(ActivityStreamImage)
+    Image(Box<ActivityStreamImage>), //FIXME: From should work
+    Multiple(Vec<ActivityStreamLinkableImage>), //FIXME: From should work
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -45,6 +47,7 @@ pub enum ActivityStreamLinkableImage {
 pub enum ActivityStreamLinkableUrl {
     Url(Url),
     Link(ActivityStreamLink),
+    Multiple(Vec<ActivityStreamLinkableUrl>), //FIXME: From should work
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -73,7 +76,8 @@ pub enum ActivityStreamLinkableCollectionPage {
 pub enum ActivityStreamQuestionClosed {
     Entity(ActivityStreamEntity),
     Bool(bool),
-    Date(DateTime<Utc>),
+    #[serde(with = "crate::traits::dateserializer")]
+    Date(DateTime<FixedOffset>),
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

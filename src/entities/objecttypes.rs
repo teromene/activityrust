@@ -9,7 +9,7 @@ use crate::entities::object::ActivityStreamObject;
 use crate::traits::properties::*;
 use crate::MaybeOptional;
 use ambassador::Delegate;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, FixedOffset};
 #[allow(non_snake_case)]
 use serde::{Deserialize, Deserializer, Serialize};
 use url::Url;
@@ -315,25 +315,22 @@ generate_basics!(
 );
 
 impl ActivityStreamTombstoneProperties for ActivityStreamTombstone {
-  fn get_former_type(&self) -> &Option<BoxedActivityStreamEntity> {
+  fn get_former_type(&self) -> &Option<ActivityStreamEntityType> {
     &self.formerType
   }
 
-  fn set_former_type<S, T: MaybeOptional<S>>(
+  fn set_former_type<T: MaybeOptional<ActivityStreamEntityType>>(
     &mut self,
     former_type: T,
-) where
-    ActivityStreamEntity: From<S> {
-      if let Some(former_type) = former_type.get_optional() {
-        self.formerType = Some(Box::new(ActivityStreamEntity::from(former_type)));
-      }
+    ) {
+      self.formerType = former_type.get_optional();
     }
 
-    fn get_deleted(&self) -> &Option<DateTime<Utc>> {
+    fn get_deleted(&self) -> &Option<DateTime<FixedOffset>> {
       &self.deleted
     }
 
-    fn set_deleted<T: MaybeOptional<DateTime<Utc>>>(&mut self, deleted: T) {
+    fn set_deleted<T: MaybeOptional<DateTime<FixedOffset>>>(&mut self, deleted: T) {
       self.deleted = deleted.get_optional();
     }
 
@@ -349,8 +346,8 @@ pub struct ActivityStreamTombstone {
     #[serde(flatten)]
     _base: ActivityStreamObject,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    formerType: Option<BoxedActivityStreamEntity>,
-    #[serde(skip_serializing_if = "Option::is_none", default)]
-    deleted: Option<DateTime<Utc>>,
+    formerType: Option<ActivityStreamEntityType>,
+    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::optionaldateserializer")]
+    deleted: Option<DateTime<FixedOffset>>,
 }
 

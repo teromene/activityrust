@@ -10,7 +10,7 @@ use crate::content::*;
 use crate::traits::properties::*;
 use crate::{MaybeOptional};
 use ambassador::Delegate;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, FixedOffset};
 use url::Url;
 
 impl ActivityStreamActorProperties for ActivityStreamActor_ {
@@ -68,8 +68,9 @@ impl ActivityStreamActorProperties for ActivityStreamActor_ {
 //// Type for the Actor data
 #[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
 struct ActivityStreamActor_ {
-    #[serde(flatten)]
+    #[serde(skip_serializing_if = "Option::is_none", default)]
     inbox: Option<ActivityStreamLinkableOrderedCollection>,
+    #[serde(skip_serializing_if = "Option::is_none", default)]
     outbox: Option<ActivityStreamLinkableOrderedCollection>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     following: Option<ActivityStreamLinkableCollection>,

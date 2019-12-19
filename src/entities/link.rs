@@ -3,7 +3,7 @@ use crate::entities::entity::{
     ActivityStreamEntity, ActivityStreamEntityType, BoxedActivityStreamEntity,
 };
 use crate::traits::properties::*;
-use crate::{MaybeOptional, SingularVec};
+use crate::MaybeOptional;
 use serde::{Deserialize, Deserializer, Serialize};
 use url::Url;
 
@@ -20,7 +20,7 @@ impl ActivityStreamLinkProperties for ActivityStreamLink {
         if let Some(ref mut context) = self.context {
             context.push(new_context);
         } else {
-            self.context = Some(SingularVec(vec![new_context]));
+            self.context = Some(vec![new_context]);
         }
     }
 
@@ -102,8 +102,8 @@ pub struct ActivityStreamLink {
     #[serde(deserialize_with = "ActivityStreamLink::deserialize_type")]
     r#type: Option<ActivityStreamEntityType>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
-    #[serde(rename = "@context")]
-    context: Option<SingularVec<Url>>,
+    #[serde(rename = "@context", with = "crate::traits::vecserializer")]
+    context: Option<Vec<Url>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     href: Option<Url>,
     #[serde(skip_serializing_if = "Option::is_none", default)]

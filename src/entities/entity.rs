@@ -71,6 +71,7 @@ pub enum ActivityStreamEntity {
     ActivityStreamVideo(ActivityStreamVideo),
     ActivityStreamMention(ActivityStreamMention),
     Object(ActivityStreamObject), //The object is at the back, and does not check type to get fallbacks
+    Vec(Vec<ActivityStreamEntity>),
     #[serde(deserialize_with = "deserialize_link")]
     Link(Url),
 }
@@ -81,7 +82,6 @@ fn deserialize_link<'de, D>(
 where
     D: serde::Deserializer<'de>,
 {
-    dbg!("Let's try to deser this...");
     if let Ok(ax) = String::deserialize(des) {
         if let Ok(ax) = Url::parse(&ax) {
             let ax: Url = ax;

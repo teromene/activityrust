@@ -5,9 +5,9 @@ use crate::entities::entity::{
 };
 use crate::entities::object::ActivityStreamObject;
 use crate::traits::properties::*;
-use crate::{MaybeOptional, SingularVec};
+use crate::MaybeOptional;
 use ambassador::Delegate;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 use url::Url;
 
@@ -125,7 +125,7 @@ pub struct ActivityStreamActivity {
     actor: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     object: Option<BoxedActivityStreamEntity>,
-    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::vecserializer")]
     target: Option<Vec<ActivityStreamEntity>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     result: Option<BoxedActivityStreamEntity>,

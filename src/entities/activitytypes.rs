@@ -8,7 +8,7 @@ use crate::entities::intransitiveactivity::ActivityStreamIntransitiveActivity;
 use crate::traits::properties::*;
 use crate::MaybeOptional;
 use ambassador::Delegate;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, FixedOffset};
 #[allow(non_snake_case)]
 use serde::{Deserialize, Deserializer, Serialize};
 use url::Url;
@@ -457,9 +457,9 @@ pub struct ActivityStreamQuestion {
     r#type: Option<ActivityStreamEntityType>,
     #[serde(flatten)]
     _base: ActivityStreamIntransitiveActivity,
-    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::vecserializer")]
     oneOf: Option<Vec<ActivityStreamEntity>>,
-    #[serde(skip_serializing_if = "Option::is_none", default)]
+    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::vecserializer")]
     anyOf: Option<Vec<ActivityStreamEntity>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     closed: Option<Box<ActivityStreamQuestionClosed>>,

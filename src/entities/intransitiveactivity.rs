@@ -7,7 +7,7 @@ use crate::entities::object::ActivityStreamObject;
 use crate::traits::properties::*;
 use crate::MaybeOptional;
 use ambassador::Delegate;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Deserializer, Serialize};
 use url::Url;
 
@@ -25,16 +25,33 @@ impl ActivityStreamIntransitiveActivityProperties for ActivityStreamIntransitive
         }
     }
 
-    fn get_target(&self) -> &Option<BoxedActivityStreamEntity> {
+    fn get_targets(&self) -> &Option<Vec<ActivityStreamEntity>> {
         &self.target
     }
 
-    fn set_target<S, T: MaybeOptional<S>>(&mut self, target: T)
+    fn set_targets<S, T: MaybeOptional<Vec<S>>>(&mut self, targets: T)
+    where
+        ActivityStreamEntity: From<S>,
+    {
+        if let Some(targets) = targets.get_optional() {
+            let targets: Vec<ActivityStreamEntity> =
+                targets.into_iter().map(ActivityStreamEntity::from).collect();
+            self.target = Some(targets);
+        }
+    }
+
+    fn add_target<S, T: MaybeOptional<S>>(&mut self, target: T)
     where
         ActivityStreamEntity: From<S>,
     {
         if let Some(target) = target.get_optional() {
-            self.target = Some(Box::new(ActivityStreamEntity::from(target)));
+            if self.target.is_none() {
+                self.target = Some(Vec::new());
+            }
+
+            if let Some(ref mut target_internal) = self.target {
+                target_internal.push(ActivityStreamEntity::from(target));
+            }
         }
     }
 
@@ -97,8 +114,8 @@ pub struct ActivityStreamIntransitiveActivity {
     actor: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     object: Option<BoxedActivityStreamEntity>,
-    #[serde(skip_serializing_if = "Option::is_none", default)]
-    target: Option<BoxedActivityStreamEntity>,
+    #[serde(skip_serializing_if = "Option::is_none", default, with = "crate::traits::vecserializer")]
+    target: Option<Vec<ActivityStreamEntity>>,
     #[serde(skip_serializing_if = "Option::is_none", default)]
     result: Option<BoxedActivityStreamEntity>,
     #[serde(skip_serializing_if = "Option::is_none", default)]

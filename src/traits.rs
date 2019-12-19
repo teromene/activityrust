@@ -9,7 +9,7 @@ pub mod properties {
     use crate::entities::orderedcollection::ActivityStreamOrderedCollection;
     use crate::MaybeOptional;
     use ambassador::delegatable_trait;
-    use chrono::{DateTime, Utc};
+    use chrono::{DateTime, FixedOffset};
     use serde::Deserializer;
     use url::Url;
 
@@ -53,8 +53,8 @@ pub mod properties {
         fn set_content<S, T: MaybeOptional<S>>(&mut self, content: T)
         where
             ActivityStreamMultilangString: From<S>;
-        fn get_end_time(&self) -> &Option<DateTime<Utc>>;
-        fn set_end_time<T: MaybeOptional<DateTime<Utc>>>(&mut self, end_time: T);
+        fn get_end_time(&self) -> &Option<DateTime<FixedOffset>>;
+        fn set_end_time<T: MaybeOptional<DateTime<FixedOffset>>>(&mut self, end_time: T);
         fn get_generator(&self) -> &Option<BoxedActivityStreamEntity>;
         fn set_generator<S, T: MaybeOptional<S>>(
             &mut self,
@@ -69,8 +69,12 @@ pub mod properties {
         fn set_image<S, T: MaybeOptional<S>>(&mut self, image: T)
         where
             ActivityStreamLinkableImage: From<S>;
-        fn get_in_reply_to(&self) -> &Option<Url>;
-        fn set_in_reply_to<T: MaybeOptional<Url>>(&mut self, in_reply_to: T);
+        fn get_in_reply_to(&self) -> &Option<BoxedActivityStreamEntity>;
+        fn set_in_reply_to<S, T: MaybeOptional<S>>(
+            &mut self,
+            in_reply_to: T,
+        ) where
+            ActivityStreamEntity: From<S>;
         fn get_location(&self) -> &Option<BoxedActivityStreamEntity>;
         fn set_location<S, T: MaybeOptional<S>>(
             &mut self,
@@ -83,12 +87,12 @@ pub mod properties {
             preview: T,
         ) where
             ActivityStreamEntity: From<S>;
-        fn get_published(&self) -> &Option<DateTime<Utc>>;
-        fn set_published<T: MaybeOptional<DateTime<Utc>>>(&mut self, published: T);
+        fn get_published(&self) -> &Option<DateTime<FixedOffset>>;
+        fn set_published<T: MaybeOptional<DateTime<FixedOffset>>>(&mut self, published: T);
         fn get_replies(&self) -> &Option<Box<ActivityStreamCollection>>;
         fn set_replies<T: MaybeOptional<ActivityStreamCollection>>(&mut self, replies: T);
-        fn get_start_time(&self) -> &Option<DateTime<Utc>>;
-        fn set_start_time<T: MaybeOptional<DateTime<Utc>>>(&mut self, start_time: T);
+        fn get_start_time(&self) -> &Option<DateTime<FixedOffset>>;
+        fn set_start_time<T: MaybeOptional<DateTime<FixedOffset>>>(&mut self, start_time: T);
         fn get_summary(&self) -> &Option<ActivityStreamMultilangString>;
         fn set_summary<S, T: MaybeOptional<S>>(&mut self, summary: T)
         where
@@ -104,8 +108,8 @@ pub mod properties {
             attachment: T,
         ) where
             ActivityStreamEntity: From<S>;
-        fn get_updated(&self) -> &Option<DateTime<Utc>>;
-        fn set_updated<T: MaybeOptional<DateTime<Utc>>>(&mut self, updated: T);
+        fn get_updated(&self) -> &Option<DateTime<FixedOffset>>;
+        fn set_updated<T: MaybeOptional<DateTime<FixedOffset>>>(&mut self, updated: T);
         fn get_url(&self) -> &Option<ActivityStreamLinkableUrl>;
         fn set_url<S, T: MaybeOptional<S>>(&mut self, url: T)
         where
@@ -205,8 +209,11 @@ pub mod properties {
         fn set_actor<S, T: MaybeOptional<S>>(&mut self, actor: T)
         where
             ActivityStreamEntity: From<S>;
-        fn get_target(&self) -> &Option<BoxedActivityStreamEntity>;
-        fn set_target<S, T: MaybeOptional<S>>(&mut self, target: T)
+        fn get_targets(&self) -> &Option<Vec<ActivityStreamEntity>>;
+        fn set_targets<S, T: MaybeOptional<Vec<S>>>(&mut self, targets: T)
+        where
+            ActivityStreamEntity: From<S>;
+        fn add_target<S, T: MaybeOptional<S>>(&mut self, target: T)
         where
             ActivityStreamEntity: From<S>;
         fn get_result(&self) -> &Option<BoxedActivityStreamEntity>;
@@ -259,14 +266,14 @@ pub mod properties {
         fn set_part_of<S, T: MaybeOptional<S>>(&mut self, part_of: T)
         where
             ActivityStreamLinkableCollection: From<S>;
-        fn get_next(&self) -> &Option<Box<ActivityStreamLinkableCollectionPage>>;
+        fn get_next(&self) -> &Option<BoxedActivityStreamEntity>;
         fn set_next<S, T: MaybeOptional<S>>(&mut self, next: T)
         where
-            ActivityStreamLinkableCollectionPage: From<S>;
-        fn get_prev(&self) -> &Option<Box<ActivityStreamLinkableCollectionPage>>;
+            ActivityStreamEntity: From<S>;
+        fn get_prev(&self) -> &Option<BoxedActivityStreamEntity>;
         fn set_prev<S, T: MaybeOptional<S>>(&mut self, prev: T)
         where
-            ActivityStreamLinkableCollectionPage: From<S>;
+            ActivityStreamEntity: From<S>;
     }
 
     #[delegatable_trait]
@@ -335,16 +342,15 @@ pub mod properties {
     }
 
     pub trait ActivityStreamTombstoneProperties {
-      fn get_former_type(&self) -> &Option<BoxedActivityStreamEntity>;
+      fn get_former_type(&self) -> &Option<ActivityStreamEntityType>;
 
-      fn set_former_type<S, T: MaybeOptional<S>>(
+      fn set_former_type<T: MaybeOptional<ActivityStreamEntityType>>(
         &mut self,
         former_type: T,
-      ) where
-          ActivityStreamEntity: From<S>;
+    ) ;
 
-      fn get_deleted(&self) -> &Option<DateTime<Utc>>;
-      fn set_deleted<T: MaybeOptional<DateTime<Utc>>>(&mut self, deleted: T);
+      fn get_deleted(&self) -> &Option<DateTime<FixedOffset>>;
+      fn set_deleted<T: MaybeOptional<DateTime<FixedOffset>>>(&mut self, deleted: T);
     }
 
     #[delegatable_trait]
@@ -428,3 +434,117 @@ pub mod properties {
         };
     }
 }
+
+pub mod vecserializer {
+
+    use serde::{Serialize, Deserialize, Serializer, Deserializer};
+
+    pub fn serialize<S, T: Serialize>(element: &Option<Vec<T>>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer {
+
+        match element {
+            None => element.serialize(serializer),
+            Some(element) => {
+                    if element.len() == 1 {
+                      let first_element = element.get(0).unwrap();
+                      first_element.serialize(serializer)
+                    } else {
+                        element.serialize(serializer)
+                    }
+            }
+        }
+
+    }
+
+    pub fn deserialize<'de, D, T: Deserialize<'de>>(deserializer: D) -> Result<Option<Vec<T>>, D::Error>
+    where
+        D: Deserializer<'de> {
+      let dtx: Option<SingularVecSerializer_helper<T>> = Option::<SingularVecSerializer_helper<T>>::deserialize(deserializer)?;
+      if let Some(dtx) = dtx {
+          match dtx {
+            SingularVecSerializer_helper::Element(elem) => {
+              Ok(Some(vec![elem]))
+            }
+            SingularVecSerializer_helper::Vec(elem) => {
+              Ok(Some(elem))
+            }
+          }
+      } else {
+        Ok(None)
+      }
+    }
+
+    #[derive(Debug, PartialEq, Serialize, Deserialize)]
+    #[serde(untagged)]
+    enum SingularVecSerializer_helper<T> {
+      Element(T),
+      Vec(Vec<T>),
+    }
+
+}
+
+pub mod optionaldateserializer {
+
+    use serde::{Serialize, Deserialize, Serializer, Deserializer};
+    use chrono::{DateTime, FixedOffset};
+    use chrono::offset::TimeZone;
+    pub fn serialize<S>(element: &Option<DateTime<FixedOffset>>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer {
+
+        match element {
+            None => {
+                let element: Option<String> = None;
+                element.serialize(serializer)
+            }
+            Some(element) => {
+                Option::Some(element.to_rfc3339()).serialize(serializer)
+            }
+        }
+
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<Option<DateTime<FixedOffset>>, D::Error>
+    where
+        D: Deserializer<'de> {
+      let dtx: Option<String> = Option::<String>::deserialize(deserializer)?;
+      if let Some(dtx) = dtx {
+
+        if let Ok(date) = DateTime::parse_from_rfc3339(&dtx) {
+            Ok(Some(date))
+        } else if let Ok(date) = chrono::Utc.datetime_from_str(&dtx, "%FT%T") {
+            Ok(Some(DateTime::<FixedOffset>::from(date)))
+        } else {
+            Err(serde::de::Error::custom("Invalid DateTime"))
+        }
+      } else {
+        Ok(None)
+      }
+    }
+}
+
+pub mod dateserializer {
+
+    use serde::{Serialize, Deserialize, Serializer, Deserializer};
+    use chrono::{DateTime, FixedOffset};
+
+    pub fn serialize<S>(element: &DateTime<FixedOffset>, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer {
+
+        element.to_rfc3339().serialize(serializer)
+
+    }
+
+    pub fn deserialize<'de, D>(deserializer: D) -> Result<DateTime<FixedOffset>, D::Error>
+    where
+        D: Deserializer<'de> {
+      let dtx = String::deserialize(deserializer)?;
+        if let Ok(date) = DateTime::parse_from_rfc3339(&dtx) {
+            return Ok(date);
+        }
+    return Err(serde::de::Error::custom("Invalid DateTime"));
+}
+}
+

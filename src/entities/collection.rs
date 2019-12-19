@@ -4,9 +4,9 @@ use crate::entities::entity::{
 };
 use crate::entities::object::ActivityStreamObject;
 use crate::traits::properties::*;
-use crate::{MaybeOptional, SingularVec};
+use crate::MaybeOptional;
 use ambassador::Delegate;
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Deserializer, Serialize};
 use url::Url;
 

@@ -3,6 +3,7 @@ name = "activityrust"
 version = "0.1.0"
 authors = ["Lyra <teromene@teromene.fr>"]
 edition = "2018"
+repository = "https://github.com/teromene/activityrust"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

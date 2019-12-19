@@ -2,10 +2,10 @@
 
 ## What is ActivityRust ?
 ActivityRust is a crate that allows a user to manage the structures used by common implementations of the ActivityPub protocol. In order to do so, it tries to be compilant with:
-    * The ActivityStream Vocabulary, as defined [here](https://www.w3.org/TR/activitystreams-vocabulary/)
-    * The ActivityPub extensions, as defined [here](https://www.w3.org/TR/activitypub/)
-    * Parts of the W3ID Security extension, as defined [here](https://w3id.org/)
-    * The WebFinger schema
+ * The ActivityStream Vocabulary, as defined [here](https://www.w3.org/TR/activitystreams-vocabulary/)
+ * The ActivityPub extensions, as defined [here](https://www.w3.org/TR/activitypub/)
+ * Parts of the W3ID Security extension, as defined [here](https://w3id.org/)
+ * The WebFinger schema
 ActivityRust allows creation and edition of these structures, but can also serialize and deserialize them to json.
 
 ## How to use ActivityRust ?

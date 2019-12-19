@@ -1,3 +1,4 @@
+//! Types for ActivityStream properties
 use crate::entities::collection::ActivityStreamCollection;
 use crate::entities::collectionpage::ActivityStreamCollectionPage;
 use crate::entities::entity::ActivityStreamEntity;

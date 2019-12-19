@@ -1,3 +1,4 @@
+//! ActivityStream Entities
 pub mod activity;
 pub mod activitytypes;
 pub mod actortypes;

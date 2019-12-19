@@ -1,5 +1,14 @@
+//! Traits used by activityrust.
+//!
+//! It includes:
+//! * The traits necessaries in order to access objects properties
+//! * The traits used to serialize/deserialize some objects
+//! * Some macros used to generate properties
+
 #[macro_use]
 pub mod properties {
+
+    //! Traits used in order to access object properties (Such as properties accessible for an Object, an Activity, an Actor...)
 
     use crate::content::*;
     use crate::entities::collection::ActivityStreamCollection;
@@ -418,8 +427,12 @@ pub mod properties {
 
 pub mod vecserializer {
 
+    //! Trait used to serialize/deserialize `Vec<T>`.
+    //! This is because in ActivityStream, arrays of size 1 are not always represented as an JSON array, but rather as an object
+
     use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
+    /// Serialize the `Vec`
     pub fn serialize<S, T: Serialize>(
         element: &Option<Vec<T>>,
         serializer: S,
@@ -440,6 +453,7 @@ pub mod vecserializer {
         }
     }
 
+    /// Deserialize the `Vec`
     pub fn deserialize<'de, D, T: Deserialize<'de>>(
         deserializer: D,
     ) -> Result<Option<Vec<T>>, D::Error>
@@ -466,7 +480,11 @@ pub mod vecserializer {
     }
 }
 
+
 pub mod optionaldateserializer {
+
+  //! Trait used to serialize/deserialize `Option<DateTime>`.
+  //! This is because ActivityStream uses Strings, that are not always fully rfc3339 compatible
 
     use chrono::offset::TimeZone;
     use chrono::{DateTime, FixedOffset};
@@ -507,6 +525,9 @@ pub mod optionaldateserializer {
 }
 
 pub mod dateserializer {
+
+    //! Trait used to serialize/deserialize `DateTime`.
+    //! This is because ActivityStream uses Strings, that are not always fully rfc3339 compatible
 
     use chrono::{DateTime, FixedOffset};
     use serde::{Deserialize, Deserializer, Serialize, Serializer};
